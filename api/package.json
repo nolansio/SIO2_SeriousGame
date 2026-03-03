@@ -1,0 +1,27 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "API de Serious Game",
+  "license": "ISC",
+  "author": "SIO2-2026",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "module-alias": "^2.3.4"
+  },
+  "_moduleAliases": {
+    "@app": "src",
+    "@config": "src/config",
+    "@controllers": "src/controllers",
+    "@models": "src/models",
+    "@routes": "src/routes",
+    "@services": "src/services",
+    "@utils": "src/utils"
+  }
+}
