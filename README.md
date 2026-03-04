@@ -22,7 +22,7 @@ Le projet est divisé en trois dossiers distincts, l'API, le jeu et l'interface 
 
 ---
 
-### Cloner le dépôt
+## Cloner le dépôt
 ```bash
 git clone https://github.com/nolansio/SIO2_SeriousGame.git serious_game
 cd serious_game
@@ -30,7 +30,7 @@ cd serious_game
 
 ---
 
-### API
+## API
 
 ### Prérequis
 - Node.js 24
@@ -43,7 +43,7 @@ cd api
 npm install
 ```
 
-#### 2. Générer la clé JWT
+### 2. Générer la clé JWT
 ```bash
 cd api
 JWT_SECRET=$(openssl rand -base64 12)
@@ -51,17 +51,17 @@ touch .env.local
 echo "JWT_SECRET=$JWT_SECRET" >> .env.local
 ```
 
-#### 3. Initialiser la base de données
+### 3. Initialiser la base de données
 ```bash
 npm run init_db
 ```
 
-#### 4. Lancer l'API
+### 4. Lancer l'API
 ```bash
 npm run dev
 ```
 
-### Interface
+## Interface
 
 ### Prérequis
 - Node.js 24
