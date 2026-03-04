@@ -21,8 +21,8 @@ exports.create = async (data) => {
     throw error;
   }
   data.code = await generateUniqueCode();
-  const newLevel = await Quizz.create(data);
-  return newLevel;
+  const quizz = await Quizz.create(data);
+  return quizz;
 };
 
 exports.update = async (data) => {
@@ -37,6 +37,6 @@ exports.update = async (data) => {
     error.code = "FORBIDDEN";
     throw error;
   }
-  const newLevel = await Quizz.update(data);
-  return newLevel;
+  await quizz.update(data);
+  return quizz;
 };

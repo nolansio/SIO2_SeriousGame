@@ -34,7 +34,7 @@ exports.updateQuizz = async (req, res) => {
   req.body.roleUser = req.user.role;
   try {
     const newQuizz = await quizzService.update(req.body);
-    res.status(201).json(newQuizz);
+    res.status(200).json(newQuizz);
   } catch (error) {
     if (error.message === "QUIZZ_NOT_FOUND") {
       return res.status(404).json({ error: error.message });
