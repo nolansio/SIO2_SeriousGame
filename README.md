@@ -92,5 +92,5 @@ cd game
 ## Accéder aux services
 - **API** : http://localhost:3000
 - **Jeu** : À compléter
-- **Tableau de bord** : À compléter
+- **Interface** : À compléter
 - **Documentation API** : http://localhost:3000/api/doc
