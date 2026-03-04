@@ -14,9 +14,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use('/api', require('@routes/authRoutes'));
-
-app.get('/', (req, res) => {
-    res.send('Hello World !');
+app.use("/api", require("@routes/userRoutes"));
+app.use("/api", require("@routes/authRoutes"));
+app.use("/api", require("@routes/quizzRoutes"));
+app.use("/api", require("@routes/questionRoutes"));
+app.get("/", (req, res) => {
+  res.send("Hello World !");
 });
 
 async function startServer() {
