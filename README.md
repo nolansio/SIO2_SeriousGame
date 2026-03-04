@@ -1,6 +1,9 @@
 # Installation
 npm install
 
+# Récupération du JWT SECRET dans le .env.local
+JWT_SECRET=xxxxxxxx
+
 # Initialisation de la base de données, création et remplissage des tables
 npm run init_db
 
