@@ -56,6 +56,12 @@ module.exports = (sequelize, DataTypes) => {
  *         code:
  *           type: string
  *           example: ABCDEF
+ *         createAt:
+ *           type: string
+ *           example: 2026-01-01T00:00:00.000Z
+ *         updateAt:
+ *           type: string
+ *           example: 2026-01-01T00:00:00.000Z
  *     QuizzFull:
  *       allOf:
  *         - $ref: '#/components/schemas/QuizzMinimal'

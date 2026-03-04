@@ -28,7 +28,7 @@ const userController = require("@controllers/userController");
  *             schema:
  *               $ref: '#/components/schemas/UserMinimal'
  *       403:
- *         description: Action de suppression interdite
+ *         description: Non autorisé
  *         content:
  *           application/json:
  *             schema:
@@ -40,11 +40,11 @@ const userController = require("@controllers/userController");
  *               userDeleteAnotherAccount:
  *                 summary: Suppression d'un autre utilisateur sans être admin
  *                 value:
- *                   error: "You can only delete your own account."
+ *                   error: An User can only delete his own account
  *               tryDeleteAdminAccount:
  *                 summary: Suppression d'un admin
  *                 value:
- *                   error: "This user is an admin, you're not allowed to delete this account"
+ *                   error: This user is an admin, you're not allowed to delete this account
  *       404:
  *         description: Utilisateur non trouvé
  *         content:
@@ -54,7 +54,7 @@ const userController = require("@controllers/userController");
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "User not found"
+ *                   example: User not found
  *       401:
  *         $ref: '#/components/responses/TokenMissing'
  */
