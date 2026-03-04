@@ -13,7 +13,9 @@
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "module-alias": "^2.3.4"
+    "module-alias": "^2.3.4",
+    "mysql2": "^3.18.2",
+    "sequelize": "^6.37.7"
   },
   "_moduleAliases": {
     "@app": "src",
@@ -23,5 +25,8 @@
     "@routes": "src/routes",
     "@services": "src/services",
     "@utils": "src/utils"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.5"
   }
 }
