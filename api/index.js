@@ -3,8 +3,9 @@ const cors = require('cors');
 const app = express();
 
 require("module-alias/register");
-const dbConnection = require("@config/dbConnection");
 
+const dbConnection = require("@config/dbConnection");
+require('dotenv').config({ path: '.env.local' });
 require("dotenv").config();
 const port = process.env.PORT;
 const host = process.env.DB_HOST;
