@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const authController = require('@controllers/authController');
-const authMiddleware = require('@middleware/authMiddleware');
+const authController = require("@controllers/authController");
+const authMiddleware = require("@middleware/authMiddleware");
 
 /**
  * @swagger
@@ -22,12 +22,36 @@ const authMiddleware = require('@middleware/authMiddleware');
  *                 example: user@example.fr
  *               password:
  *                 type: string
- *                 example: user
+ *                 example: USER
  *     responses:
  *       201:
  *         description: Utilisateur inscrit avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserMinimal'
+ *       400:
+ *         description: Mauvaise requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Parameters 'email' and 'password' required
+ *       409:
+ *         description: Conflit
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Email déjà utilisé
  */
-router.post('/register', authController.register);
+router.post("/register", authController.register);
 
 /**
  * @swagger
@@ -51,8 +75,42 @@ router.post('/register', authController.register);
  *     responses:
  *       200:
  *         description: Utilisateur connecté avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 access_token:
+ *                   type: string
+ *                   example: XXXXX.XXXXX.XXXXX
+ *                 token_type:
+ *                   type: string
+ *                   example: Bearer
+ *                 expires_in:
+ *                   type: string
+ *                   example: 1h
+ *       400:
+ *         description: Mauvaise requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Parameters 'email' and 'password' required
+ *       401:
+ *         description: Identifiants invalides
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid credentials
  */
-router.post('/login', authController.login);
+router.post("/login", authController.login);
 
 /**
  * @swagger
@@ -65,11 +123,13 @@ router.post('/login', authController.login);
  *     responses:
  *       200:
  *         description: Utilisateur récupéré avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserFull'
  *       401:
- *         description: Jeton manquant ou invalide
- *       403:
- *         description: Accès refusé
+ *         $ref: '#/components/responses/TokenMissing'
  */
-router.get('/me', authMiddleware, authController.myself);
+router.get("/me", authMiddleware, authController.myself);
 
 module.exports = router;

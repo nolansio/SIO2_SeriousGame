@@ -26,17 +26,7 @@ const userController = require("@controllers/userController");
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                   example: 1
- *                 email:
- *                   type: string
- *                   example: "john_doe@example.com"
- *                 role:
- *                   type: string
- *                   example: "USER"
+ *               $ref: '#/components/schemas/UserMinimal'
  *       403:
  *         description: Action de suppression interdite
  *         content:
@@ -65,6 +55,8 @@ const userController = require("@controllers/userController");
  *                 error:
  *                   type: string
  *                   example: "User not found"
+ *       401:
+ *         $ref: '#/components/responses/TokenMissing'
  */
 router.delete("/users/:id", userController.deleteUser);
 

@@ -32,3 +32,24 @@ module.exports = (sequelize, DataTypes) => {
   );
   return Question;
 };
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Question:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         quizzId:
+ *           type: integer
+ *           example: 1
+ *         enonce:
+ *           type: string
+ *           example: Son vrai nom est-il François-Marie Arouet ?
+ *         reponse:
+ *           type: boolean
+ *           example: true
+ */

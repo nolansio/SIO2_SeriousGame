@@ -29,3 +29,29 @@ module.exports = (sequelize, DataTypes) => {
   );
   return User;
 };
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UserMinimal:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         email:
+ *           type: string
+ *           example: user@example.fr
+ *         role:
+ *           type: string
+ *           example: USER
+ *     UserFull:
+ *       allOf:
+ *         - $ref: '#/components/schemas/UserMinimal'
+ *         - type: object
+ *           properties:
+ *             quizzes:
+ *               type: array
+ *               items: { $ref: '#/components/schemas/QuizzFull' }
+ */

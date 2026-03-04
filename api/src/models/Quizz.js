@@ -33,3 +33,35 @@ module.exports = (sequelize, DataTypes) => {
   );
   return Quizz;
 };
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     QuizzMinimal:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         userId:
+ *           type: integer
+ *           example: 1
+ *         title:
+ *           type: string
+ *           example: Quizz Voltaire
+ *         description:
+ *           type: string
+ *           example: Résision vie de Voltaire
+ *         code:
+ *           type: string
+ *           example: ABCDEF
+ *     QuizzFull:
+ *       allOf:
+ *         - $ref: '#/components/schemas/QuizzMinimal'
+ *         - type: object
+ *           properties:
+ *             questions:
+ *               type: array
+ *               items: { $ref: '#/components/schemas/Question' }
+ */
