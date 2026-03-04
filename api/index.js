@@ -5,21 +5,34 @@ const app = express();
 require("module-alias/register");
 
 const dbConnection = require("@config/dbConnection");
-require('dotenv').config({ path: '.env.local' });
+require('dotenv').config({path: '.env.local'});
 require("dotenv").config();
 const port = process.env.PORT;
 const host = process.env.DB_HOST;
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("@config/swagger");
+
+const swaggerOptions = {
+    swaggerOptions: {
+        persistAuthorization: true
+    }
+};
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+app.use("/api/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerOptions));
+
 app.use('/api', require('@routes/authRoutes'));
 app.use("/api", require("@routes/userRoutes"));
 app.use("/api", require("@routes/authRoutes"));
 app.use("/api", require("@routes/quizzRoutes"));
 app.use("/api", require("@routes/questionRoutes"));
+
 app.get("/", (req, res) => {
-  res.send("Hello World !");
+    res.send("Hello World !");
 });
 
 async function startServer() {
@@ -36,6 +49,7 @@ async function startServer() {
         console.error("Unable to connect:", err);
     }
 }
+
 startServer();
 
 module.exports = app;
