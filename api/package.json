@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "API de Serious Game",
   "license": "ISC",
-  "author": "SIO2-2026",
+  "author": "",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "init_db": "npx sequelize db:drop && npx sequelize db:create && npx sequelize-cli db:migrate && npx sequelize db:seed:all"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -27,6 +29,7 @@
     "@utils": "src/utils"
   },
   "devDependencies": {
+    "nodemon": "^3.1.14",
     "sequelize-cli": "^6.6.5"
   }
 }

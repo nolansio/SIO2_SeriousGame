@@ -1,8 +1,9 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 const app = express();
 
 require("module-alias/register");
+const dbConnection = require("@config/dbConnection");
 
 require("dotenv").config();
 const port = process.env.PORT;
@@ -12,14 +13,26 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Route simple
-app.get('/', (req, res) => {
-    res.send('Hello World !');
+app.get("/", (req, res) => {
+  res.send("Hello World !");
 });
 
-// Lancement du serveur
-app.listen(port, host, () => {
-    console.log('Serveur lancé sur http://localhost:3000');
-});
+async function startServer() {
+  try {
+    await dbConnection.authenticate();
+    let prefix = "https://";
+
+    if (host === "localhost" || host === "127.0.0.1") {
+      prefix = "http://";
+    }
+
+    app.listen(port, host, () =>
+      console.log(`Serveur lancé sur ${prefix}${host}:${port}`),
+    );
+  } catch (err) {
+    console.error("Unable to connect:", err);
+  }
+}
+startServer();
 
 module.exports = app;
