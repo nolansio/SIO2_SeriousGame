@@ -67,8 +67,8 @@ exports.get = async (id) => {
     return quiz;
 };
 
-exports.delete = async (data) => {
-    const quiz = await Quiz.findByPk(data.id, null);
+exports.delete = async (id, user) => {
+    const quiz = await Quiz.findByPk(id, null);
 
     if (!quiz) {
         const error = new Error('Quiz not found');
@@ -77,14 +77,12 @@ exports.delete = async (data) => {
         throw error;
     }
 
-    if (data.roleUser === 'USER' && data.userId !== quiz.userId) {
-        const error = new Error('An User can only delete his own quizzes');
+    if (user.id !== quiz.userId && user.role !== 'ADMIN') {
+        const error = new Error("You are not allowed to delete this quiz");
         error.code = 'FORBIDDEN';
 
         throw error;
     }
 
-    await quiz.destroy();
-
-    return quiz;
+    return quiz.destroy();
 };

@@ -55,7 +55,7 @@ exports.get = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        const quiz = await quizService.delete(req.params.id);
+        const quiz = await quizService.delete(req.params.id, req.user);
         res.status(200).json(quiz);
     } catch (error) {
         if (error.code === 'QUIZ_NOT_FOUND') {
