@@ -155,6 +155,13 @@ router.put("/quizzes/:id", authMiddleware, quizzController.updateQuizz);
  *   get:
  *     summary: Récupérer les informations d'un Quizz
  *     tags: [Quizz]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *           required: true
+ *           description: ID de la Question à supprimer
  *     responses:
  *       200:
  *         description: Quizz récupéré avec succès
@@ -174,7 +181,6 @@ router.put("/quizzes/:id", authMiddleware, quizzController.updateQuizz);
  *                   example: Quizz not found
  */
 router.get("/quizzes/:id", quizzController.getQuizz);
-
 
 /**
  * @swagger
