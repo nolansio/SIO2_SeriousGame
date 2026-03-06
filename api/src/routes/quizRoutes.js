@@ -8,19 +8,12 @@ const authMiddleware = require('@middleware/authMiddleware');
 
 /**
  * @swagger
- * /users/{id}/quizzes:
+ * /quizzes:
  *   post:
  *     summary: Création d'un quiz
  *     tags: [Quiz]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *           required: true
- *           description: ID de l'utilisateur
  *     requestBody:
  *       required: true
  *       content:
@@ -34,11 +27,8 @@ const authMiddleware = require('@middleware/authMiddleware');
  *               description:
  *                 type: string
  *                 example: Révision vie de Voltaire
- *               userId:
- *                 type: integer
- *                 example: 1
  *     responses:
- *       200:
+ *       201:
  *         description: Quiz créé avec succès
  *         content:
  *           application/json:
@@ -54,6 +44,8 @@ const authMiddleware = require('@middleware/authMiddleware');
  *                 error:
  *                   type: string
  *                   example: Parameters 'title' and 'description' required
+ *       401:
+ *         $ref: '#/components/responses/TokenMissing'
  *       403:
  *         description: Non autorisé
  *         content:
@@ -74,10 +66,8 @@ const authMiddleware = require('@middleware/authMiddleware');
  *                 error:
  *                   type: string
  *                   example: User not found
- *       401:
- *         $ref: '#/components/responses/TokenMissing'
  */
-router.post('/users/:id/quizzes', authMiddleware, quizController.create);
+router.post('/quizzes', authMiddleware, quizController.create);
 
 /**
  * @swagger

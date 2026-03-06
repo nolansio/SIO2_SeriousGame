@@ -1,19 +1,15 @@
 const quizService = require('@services/quizService');
 
 exports.create = async (req, res) => {
-    if (!req.user.id || !req.body.title || !req.body.description || !req.params.id) {
+    if (!req.body.title || !req.body.description) {
         return res.status(400).json({ error: "Parameters 'title' and 'description' required" });
     }
-
-    req.body.userId = req.params.id;
 
     try {
         const quiz = await quizService.create(req.body, req.user);
         res.status(201).json(quiz);
     } catch (error) {
-        if (error.code === 'USER_NOT_FOUND') {
-            return res.status(404).json({ error: error.message });
-        } else if (error.code === 'FORBIDDEN') {
+        if (error.code === 'FORBIDDEN') {
             return res.status(403).json({ error: error.message });
         }
 

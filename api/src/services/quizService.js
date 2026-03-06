@@ -16,26 +16,15 @@ async function generateUniqueCode() {
     return code;
 }
 
-exports.create = async (data, currentUser) => {
-    const user = await User.findByPk(data.userId, null);
+exports.create = async (data, user) => {
+    const code = await generateUniqueCode();
 
-    if (!user) {
-        const error = new Error('User not found');
-        error.code = 'USER_NOT_FOUND';
-
-        throw error;
-    }
-
-    if (currentUser.role === 'USER' && currentUser.id !== data.userId) {
-        const error = new Error("An user can't create a quiz for another user");
-        error.code = 'FORBIDDEN';
-
-        throw error;
-    }
-
-    data.code = await generateUniqueCode();
-
-    return await Quiz.create(data);
+    return await Quiz.create({
+        title: data.title,
+        answer: data.answer,
+        code: code,
+        userId: user.id
+    });
 };
 
 exports.update = async (data) => {
