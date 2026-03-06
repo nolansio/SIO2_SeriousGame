@@ -3,12 +3,12 @@ module.exports = {
         await queryInterface.bulkInsert('user', [
             {
                 email: 'user@example.com',
-                password: '$2b$10$VSwa07WA8TEqTLdblotJ2uPUw1ubCOeNmK0wCkokO8qSskiAQccvu', // TODO: Corriger hash
+                password: '$2b$10$VSwa07WA8TEqTLdblotJ2uPUw1ubCOeNmK0wCkokO8qSskiAQccvu',
                 role: 'USER'
             },
             {
                 email: 'root@example.com',
-                password: '$2b$10$l40PryMfw8Hq48vDZMKeU.yJvIY2LsDSbkyzmHu5ItwTpzQQOeJgK', // TODO: Corriger hash
+                password: '$2b$10$l40PryMfw8Hq48vDZMKeU.yJvIY2LsDSbkyzmHu5ItwTpzQQOeJgK',
                 role: 'ADMIN'
             }
         ]);
