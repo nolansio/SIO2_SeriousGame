@@ -1,18 +1,15 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { User, Quizz, Question } = require("@models");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { User, Quiz, Question } = require('@models');
 
-const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
-
-exports.register = async (email, password, role = "USER") => {
+exports.register = async (email, password, role = 'USER') => {
     const existing = await User.findOne({
-        where: { email },
+        where: { email }
     });
 
     if (existing) {
-        const error = new Error("Email déjà utilisé");
-        error.code = "EMAIL_ALREADY_USED";
+        const error = new Error('Email already used');
+        error.code = 'EMAIL_ALREADY_USED';
 
         throw error;
     }
@@ -29,8 +26,8 @@ exports.login = async (email, password) => {
     });
 
     if (!user) {
-        const error = new Error("Invalid credentials");
-        error.code = "INVALID_CREDENTIALS";
+        const error = new Error('Invalid credentials');
+        error.code = 'INVALID_CREDENTIALS';
 
         throw error;
     }
@@ -38,45 +35,35 @@ exports.login = async (email, password) => {
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-        const error = new Error("Invalid credentials");
-        error.code = "INVALID_CREDENTIALS";
+        const error = new Error('Invalid credentials');
+        error.code = 'INVALID_CREDENTIALS';
 
         throw error;
     }
 
-    const token = jwt.sign(
-        { id: user.id, email: user.email, role: user.role },
-        JWT_SECRET,
-        { expiresIn: JWT_EXPIRES_IN },
-    );
+    const token = jwt.sign({
+        id: user.id,
+        email: user.email,
+        role: user.role
+    }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 
     return {
-        access_token: token,
-        token_type: "Bearer",
-        expires_in: JWT_EXPIRES_IN,
+        access_token: token, token_type: 'Bearer', expires_in: process.env.JWT_EXPIRES_IN
     };
 };
 
 exports.myself = async (email) => {
     const user = await User.findOne({
-        where: { email },
-        include: [
-            {
-                model: Quizz,
-                as: "quizzes",
-                include: [
-                    {
-                        model: Question,
-                        as: "questions",
-                    },
-                ],
-            },
-        ],
+        where: { email }, include: [{
+            model: Quiz, as: 'quizzes', include: [{
+                model: Question, as: 'questions',
+            },]
+        },]
     });
 
     if (!user) {
-        const error = new Error("Identifiants invalides");
-        error.code = "INVALID_CREDENTIALS";
+        const error = new Error('Identifiants invalides');
+        error.code = 'INVALID_CREDENTIALS';
 
         throw error;
     }

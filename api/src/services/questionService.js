@@ -1,61 +1,73 @@
-const { Question, Quizz } = require("@models");
+const { Question, Quiz } = require('@models');
 
-exports.create = async (data, currentUser) => {
-    const quizz = await Quizz.findByPk(data.id);
-    if (!quizz) {
-        const error = new Error("Quizz not found");
-        error.code = "QUIZZ_NOT_FOUND";
+exports.create = async (data, user) => {
+    const quiz = await Quiz.findByPk(data.id, null);
+
+    if (!quiz) {
+        const error = new Error('Quiz not found');
+        error.code = 'QUIZ_NOT_FOUND';
+
         throw error;
     }
-    if (currentUser.role === "USER" && currentUser.id !== quizz.userId) {
-        const error = new Error(
-            "An User can only create a new Question in his own Quizzes",
-        );
-        error.code = "FORBIDDEN";
+
+    if (user.role === 'USER' && user.id !== quiz.userId) {
+        const error = new Error('An user can only create a new question in his own quizzes');
+        error.code = 'FORBIDDEN';
+
         throw error;
     }
-    const question = await Question.create({
-        quizzId: data.id,
-        enonce: data.enonce,
-        reponse: data.reponse,
+
+    return await Question.create({
+        quizId: data.id,
+        title: data.title,
+        answer: data.answer,
     });
-    return question;
 };
 
 exports.delete = async (id, currentUser) => {
-    const question = await Question.findByPk(id);
+    const question = await Question.findByPk(id, null);
+
     if (!question) {
-        const error = new Error("Question not found");
-        error.code = "QUESTION_NOT_FOUND";
+        const error = new Error('Question not found');
+        error.code = 'QUESTION_NOT_FOUND';
+
         throw error;
     }
-    const quizz = await Quizz.findByPk(question.quizzId);
-    if (currentUser.role === "USER" && currentUser.id !== quizz.userId) {
-        const error = new Error(
-            "An User can only delete a Question in his own Quizzes",
-        );
-        error.code = "FORBIDDEN";
+
+    const quiz = await Quiz.findByPk(question.quizId, null);
+
+    if (currentUser.role === 'USER' && currentUser.id !== quiz.userId) {
+        const error = new Error('An user can only delete a question in his own quizzes',);
+        error.code = 'FORBIDDEN';
+
         throw error;
     }
+
     await question.destroy();
+
     return question;
 };
 
-exports.update = async (data, currentUser) => {
-    const question = await Question.findByPk(data.id);
+exports.update = async (data, user) => {
+    const question = await Question.findByPk(data.id, null);
+
     if (!question) {
-        const error = new Error("Question not found");
-        error.code = "QUESTION_NOT_FOUND";
+        const error = new Error('Question not found');
+        error.code = 'QUESTION_NOT_FOUND';
+
         throw error;
     }
-    const quizz = await Quizz.findByPk(question.quizzId);
-    if (currentUser.role === "USER" && currentUser.id !== quizz.userId) {
-        const error = new Error(
-            "An User can only update a Question in his own Quizzes",
-        );
-        error.code = "FORBIDDEN";
+
+    const quiz = await Quiz.findByPk(question.quizId, null);
+
+    if (user.role === 'USER' && user.id !== quiz.userId) {
+        const error = new Error('An user can only update a question in his own quizzes',);
+        error.code = 'FORBIDDEN';
+
         throw error;
     }
+
     await question.update(data);
+
     return question;
 };

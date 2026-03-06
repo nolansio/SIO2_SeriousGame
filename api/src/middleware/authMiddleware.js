@@ -1,22 +1,22 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 function authMiddleware(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    return res.status(401).json({ message: "Missing token" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-    if (err) {
-      return res.status(401).json({ message: "Invalid token" });
+    if (!token) {
+        return res.status(401).json({ message: 'Missing token' });
     }
 
-    req.user = payload;
+    jwt.verify(token, process.env.JWT_SECRET, (error, payload) => {
+        if (error) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
 
-    next();
-  });
+        req.user = payload;
+
+        next();
+    });
 }
 
 module.exports = authMiddleware;

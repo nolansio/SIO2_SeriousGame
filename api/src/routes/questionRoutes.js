@@ -1,14 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const questionController = require("@controllers/questionController");
-const authMiddleware = require("@middleware/authMiddleware");
+const questionController = require('@controllers/questionController');
+const authMiddleware = require('@middleware/authMiddleware');
 
 /**
  * @swagger
  * /quizzes/{id}/questions:
  *   post:
- *     summary: Création d'un Question dans un Quizz
+ *     summary: Création d'une question
  *     tags: [Question]
  *     security:
  *       - bearerAuth: []
@@ -18,7 +18,7 @@ const authMiddleware = require("@middleware/authMiddleware");
  *         schema:
  *           type: integer
  *           required: true
- *           description: ID du Quizz à de la nouvelle Question
+ *           description: ID du quiz
  *     requestBody:
  *       required: true
  *       content:
@@ -26,15 +26,15 @@ const authMiddleware = require("@middleware/authMiddleware");
  *           schema:
  *             type: object
  *             properties:
- *               enonce:
+ *               title:
  *                 type: string
  *                 example: Son vrai nom est-il François-Marie Arouet ?
- *               reponse:
+ *               answer:
  *                 type: boolean
  *                 example: true
  *     responses:
  *       201:
- *         description: Création de la Question avec succès
+ *         description: question créée avec succès
  *         content:
  *           application/json:
  *             schema:
@@ -48,9 +48,9 @@ const authMiddleware = require("@middleware/authMiddleware");
  *               properties:
  *                 error:
  *                   type: string
- *                   example: Parameters 'enonce' and 'reponse' required
+ *                   example: Parameters 'title' and 'answer' required
  *       404:
- *         description: Quizz non trouvé
+ *         description: Quiz non trouvé
  *         content:
  *           application/json:
  *             schema:
@@ -58,7 +58,7 @@ const authMiddleware = require("@middleware/authMiddleware");
  *               properties:
  *                 error:
  *                   type: string
- *                   example: Quizz not found
+ *                   example: Quiz not found
  *       403:
  *         description: Non autorisé
  *         content:
@@ -68,21 +68,17 @@ const authMiddleware = require("@middleware/authMiddleware");
  *               properties:
  *                 error:
  *                   type: string
- *                   example: An User can only create a new Question in his own Quizzes
+ *                   example: An user can only create a new question in his own quizzes
  *       401:
  *         $ref: '#/components/responses/TokenMissing'
  */
-router.post(
-    "/quizzes/:id/questions",
-    authMiddleware,
-    questionController.createQuestion,
-);
+router.post('/quizzes/:id/questions', authMiddleware, questionController.create);
 
 /**
  * @swagger
  * /questions/{id}:
  *   delete:
- *     summary: Suppression d'une Question
+ *     summary: Suppression d'une question
  *     tags: [Question]
  *     security:
  *       - bearerAuth: []
@@ -92,14 +88,14 @@ router.post(
  *         schema:
  *           type: integer
  *           required: true
- *           description: ID de la Question à supprimer
+ *           description: ID de la question
  *     responses:
  *       200:
- *         description: Suppression de la Question avec succès
+ *         description: Question supprimée avec succès
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Question'
+ *               $ref: '#/components/schemas/question'
  *       404:
  *         description: Question non trouvé
  *         content:
@@ -109,7 +105,7 @@ router.post(
  *               properties:
  *                 error:
  *                   type: string
- *                   example: Question not found
+ *                   example: question not found
  *       403:
  *         description: Non autorisé
  *         content:
@@ -119,21 +115,17 @@ router.post(
  *               properties:
  *                 error:
  *                   type: string
- *                   example: An User can only delete a Question in his own Quizzes
+ *                   example: An user can only delete a question in his own quizzes
  *       401:
  *         $ref: '#/components/responses/TokenMissing'
  */
-router.delete(
-    "/questions/:id",
-    authMiddleware,
-    questionController.deleteQuestion,
-);
+router.delete('/questions/:id', authMiddleware, questionController.delete);
 
 /**
  * @swagger
  * /questions/{id}:
  *   put:
- *     summary: Mise à jour d'une Question
+ *     summary: Mise à jour d'une question
  *     tags: [Question]
  *     security:
  *       - bearerAuth: []
@@ -143,7 +135,7 @@ router.delete(
  *         schema:
  *           type: integer
  *           required: true
- *           description: ID de la Question à modifier
+ *           description: ID de la question à modifier
  *     requestBody:
  *       required: true
  *       content:
@@ -151,19 +143,19 @@ router.delete(
  *           schema:
  *             type: object
  *             properties:
- *               enonce:
+ *               title:
  *                 type: string
  *                 example: Son vrai nom est-il François-Marie Arouet ?
- *               reponse:
+ *               answer:
  *                 type: boolean
  *                 example: true
  *     responses:
  *       200:
- *         description: Mise à jour de la Question avec succès
+ *         description: Mise à jour de la question avec succès
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Question'
+ *               $ref: '#/components/schemas/question'
  *       400:
  *         description: Mauvaise requête
  *         content:
@@ -173,9 +165,9 @@ router.delete(
  *               properties:
  *                 error:
  *                   type: string
- *                   example: Parameters 'enonce' and 'reponse' required
+ *                   example: Parameters 'title' and 'answer' required
  *       404:
- *         description: Question non trouvé
+ *         description: question non trouvé
  *         content:
  *           application/json:
  *             schema:
@@ -183,7 +175,7 @@ router.delete(
  *               properties:
  *                 error:
  *                   type: string
- *                   example: Question not found
+ *                   example: question not found
  *       403:
  *         description: Non autorisé
  *         content:
@@ -193,12 +185,12 @@ router.delete(
  *               properties:
  *                 error:
  *                   type: string
- *                   example: An User can only update a Question in his own Quizzes
+ *                   example: An User can only update a question in his own quizzes
  *       401:
  *         $ref: '#/components/responses/TokenMissing'
  */
-router.put("/questions/:id", authMiddleware, questionController.updateQuestion);
+router.put('/questions/:id', authMiddleware, questionController.update);
 
-// router.post("/users", userController.createUser);
+// router.post('/users', userController.createUser);
 
 module.exports = router;

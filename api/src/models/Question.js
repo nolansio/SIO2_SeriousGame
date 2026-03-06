@@ -1,36 +1,40 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  class Question extends Model {
-    static associate(models) {
-      this.belongsTo(models.Quizz, {
-        foreignKey: "quizzId",
-        as: "quizz",
-      });
+    class Question extends Model {
+        static associate(models) {
+            this.belongsTo(models.Quiz, {
+                foreignKey: 'quizId',
+                as: 'quiz'
+            });
+        }
     }
-  }
-  Question.init(
-    {
-      id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-      enonce: { type: DataTypes.TEXT, allowNull: false },
-      quizzId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: { model: "Quizz", key: "id" },
-      },
-      reponse: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
-    },
-    {
-      sequelize,
-      modelName: "Question",
-      tableName: "question",
-    },
-  );
-  return Question;
+
+    Question.init(
+        {
+            id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+            title: { type: DataTypes.TEXT, allowNull: false },
+            quizId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: { model: 'Quiz', key: 'id' }
+            },
+            answer: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: true
+            },
+        },
+        {
+            sequelize,
+            modelName: 'Question',
+            tableName: 'question'
+        },
+    );
+
+    return Question;
 };
 
 /**
@@ -43,13 +47,13 @@ module.exports = (sequelize, DataTypes) => {
  *         id:
  *           type: integer
  *           example: 1
- *         quizzId:
+ *         quizId:
  *           type: integer
  *           example: 1
- *         enonce:
+ *         title:
  *           type: string
  *           example: Son vrai nom est-il François-Marie Arouet ?
- *         reponse:
+ *         answer:
  *           type: boolean
  *           example: true
  */
