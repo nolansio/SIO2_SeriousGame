@@ -1,4 +1,5 @@
 const authService = require('@services/authService');
+const LogConnectService = require('@services/logConnectService');
 
 exports.register = async (req, res) => {
     try {
@@ -21,9 +22,9 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    try {
-        const {email, password} = req.body;
+    const {email, password} = req.body;
 
+    try {
         if (!email || !password) {
             return res.status(400).json({error: "Parameters 'email' and 'password' required"})
         }
@@ -33,6 +34,10 @@ exports.login = async (req, res) => {
         return res.json(tokenData);
     } catch (error) {
         if (error.code === 'INVALID_CREDENTIALS') {
+            if (email) {
+                LogConnectService.create(email);
+            }
+
             return res.status(401).json({error: error.message});
         } else {
             return res.status(500).json({error: error.message});

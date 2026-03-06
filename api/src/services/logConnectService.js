@@ -1,6 +1,7 @@
-const { LogConnect } = require("@models");
+const {LogConnect} = require("@models");
 
-// exports.create = async (data) => {
-//   const newLevel = await Levels.create(data);
-//   return newLevel;
-// };
+exports.create = async (email) => {
+    return await LogConnect.create({
+        email
+    });
+};
