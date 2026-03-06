@@ -7,14 +7,15 @@ exports.delete = async (req, res) => {
 
         res.status(200).json(user);
     } catch (error) {
-        if (error.code === 'FORBIDDEN_DELETE_USER') {
+        if (error.code === 'FORBIDDEN') {
             return res.status(403).json({ error: error.message });
         }
+
         if (error.code === 'USER_NOT_FOUND') {
             return res.status(404).json({ error: error.message });
-        } else {
-            res.status(500).json({ error: error.message });
         }
+
+        return res.status(error.status || 500).json({ error: error.message });
     }
 };
 
