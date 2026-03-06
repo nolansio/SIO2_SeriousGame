@@ -1,12 +1,12 @@
 const authService = require('@services/authService');
 const LogConnectService = require('@services/logConnectService');
-const failedLogins = {};
+const logAttempts = {};
 
 exports.register = async (req, res) => {
-    const attempts = await logFailedAttempt(req.ip);
+    const {attempts, duration} = failedLogAttempt(req.ip);
 
     if (attempts >= 3) {
-        return res.status(429).json({error: 'Too many requests'});
+        return res.status(429).json({error: `Too many requests, try again in ${duration} seconds`});
     }
 
     try {
@@ -29,10 +29,10 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    const attempts = logFailedAttempt(req.ip);
+    const {attempts, duration} = failedLogAttempt(req.ip);
 
     if (attempts >= 3) {
-        return res.status(429).json({error: 'Too many requests'});
+        return res.status(429).json({error: `Too many requests, try again in ${duration} seconds`});
     }
 
     const {email, password} = req.body;
@@ -72,18 +72,47 @@ exports.myself = async (req, res, next) => {
     }
 };
 
-function logFailedAttempt(ip) {
+function failedLogAttempt(ip) {
     const now = Date.now();
 
-    if (!failedLogins[ip]) {
-        failedLogins[ip] = { count: 1, firstAttemptTime: now };
+    const initial = 10 * 1000;
+    const max = 120 * 1000;
+
+    refreshLogAttempt();
+
+    if (!logAttempts[ip]) {
+        logAttempts[ip] = {
+            count: 1,
+            timestamp: now,
+            duration: initial
+        };
+    } else if (now - logAttempts[ip].timestamp > logAttempts[ip].duration) {
+        logAttempts[ip] = {
+            count: 1,
+            timestamp: now,
+            duration: initial
+        };
     } else {
-        if (now - failedLogins[ip].firstAttemptTime > 10 * 1000) {
-            failedLogins[ip] = { count: 1, firstAttemptTime: now };
-        } else {
-            failedLogins[ip].count += 1;
+        logAttempts[ip].count += 1;
+
+        if (logAttempts[ip].count > 3) {
+            logAttempts[ip].duration = Math.min(logAttempts[ip].duration * 2, max);
         }
+
+        logAttempts[ip].timestamp = now;
     }
 
-    return failedLogins[ip].count;
+    return {
+        attempts: logAttempts[ip].count,
+        duration: Math.ceil(logAttempts[ip].duration / 1000)
+    };
+}
+
+function refreshLogAttempt() {
+    const now = Date.now();
+    for (const ip in logAttempts) {
+        if (now - logAttempts[ip].timestamp > logAttempts[ip].duration) {
+            delete logAttempts[ip];
+        }
+    }
 }
