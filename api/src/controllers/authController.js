@@ -1,7 +1,14 @@
 const authService = require('@services/authService');
 const LogConnectService = require('@services/logConnectService');
+const failedLogins = {};
 
 exports.register = async (req, res) => {
+    const attempts = await logFailedAttempt(req.ip);
+
+    if (attempts >= 3) {
+        return res.status(429).json({error: 'Too many requests'});
+    }
+
     try {
         const {email, password} = req.body;
 
@@ -22,6 +29,12 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+    const attempts = logFailedAttempt(req.ip);
+
+    if (attempts >= 3) {
+        return res.status(429).json({error: 'Too many requests'});
+    }
+
     const {email, password} = req.body;
 
     try {
@@ -58,3 +71,19 @@ exports.myself = async (req, res, next) => {
         }
     }
 };
+
+function logFailedAttempt(ip) {
+    const now = Date.now();
+
+    if (!failedLogins[ip]) {
+        failedLogins[ip] = { count: 1, firstAttemptTime: now };
+    } else {
+        if (now - failedLogins[ip].firstAttemptTime > 10 * 1000) {
+            failedLogins[ip] = { count: 1, firstAttemptTime: now };
+        } else {
+            failedLogins[ip].count += 1;
+        }
+    }
+
+    return failedLogins[ip].count;
+}
