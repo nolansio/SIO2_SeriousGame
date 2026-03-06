@@ -8,7 +8,7 @@ module.exports = {
             },
             {
                 email: 'root@example.com',
-                password: '$2b$10$l40PryMfw8Hq48vDZMKeU.yJvIY2LsDSbkyzmHu5ItwTpzQQOeJgK\n',
+                password: '$2b$10$l40PryMfw8Hq48vDZMKeU.yJvIY2LsDSbkyzmHu5ItwTpzQQOeJgK',
                 role: 'ADMIN'
             }
         ]);

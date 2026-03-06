@@ -1,14 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const authController = require("@controllers/authController");
-const authMiddleware = require("@middleware/authMiddleware");
+const authController = require('@controllers/authController');
+const authMiddleware = require('@middleware/authMiddleware');
 
 /**
  * @swagger
  * /register:
  *   post:
- *     summary: S'inscrire
+ *     summary: Inscription d'un utilisateur
  *     tags: [Authentification]
  *     requestBody:
  *       required: true
@@ -19,10 +19,10 @@ const authMiddleware = require("@middleware/authMiddleware");
  *             properties:
  *               email:
  *                 type: string
- *                 example: user@example.fr
+ *                 example: user@example.com
  *               password:
  *                 type: string
- *                 example: USER
+ *                 example: user
  *     responses:
  *       201:
  *         description: Utilisateur inscrit avec succès
@@ -49,15 +49,15 @@ const authMiddleware = require("@middleware/authMiddleware");
  *               properties:
  *                 error:
  *                   type: string
- *                   example: Email déjà utilisé
+ *                   example: Email already used
  */
-router.post("/register", authController.register);
+router.post('/register', authController.register);
 
 /**
  * @swagger
  * /login:
  *   post:
- *     summary: Se connecter
+ *     summary: Connexion d'un utilisateur
  *     tags: [Authentification]
  *     requestBody:
  *       required: true
@@ -68,7 +68,7 @@ router.post("/register", authController.register);
  *             properties:
  *               email:
  *                 type: string
- *                 example: user@example.fr
+ *                 example: user@example.com
  *               password:
  *                 type: string
  *                 example: user
@@ -82,7 +82,7 @@ router.post("/register", authController.register);
  *               properties:
  *                 access_token:
  *                   type: string
- *                   example: XXXXX.XXXXX.XXXXX
+ *                   example: MThZh4...
  *                 token_type:
  *                   type: string
  *                   example: Bearer
@@ -110,13 +110,13 @@ router.post("/register", authController.register);
  *                   type: string
  *                   example: Invalid credentials
  */
-router.post("/login", authController.login);
+router.post('/login', authController.login);
 
 /**
  * @swagger
  * /me:
  *   get:
- *     summary: Récupérer son utilisateur
+ *     summary: Récupération de son utilisateur
  *     tags: [Authentification]
  *     security:
  *       - bearerAuth: []
@@ -128,8 +128,8 @@ router.post("/login", authController.login);
  *             schema:
  *               $ref: '#/components/schemas/UserFull'
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  */
-router.get("/me", authMiddleware, authController.myself);
+router.get('/me', authMiddleware, authController.myself);
 
 module.exports = router;

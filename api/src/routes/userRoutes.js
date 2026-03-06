@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const userController = require("@controllers/userController");
+const userController = require('@controllers/userController');
 
-// router.get("/users/:id", userController.getUserById);
+// router.get('/users/:id', userController.getUserById);
 
 /**
  * @swagger
@@ -19,10 +19,10 @@ const userController = require("@controllers/userController");
  *         schema:
  *           type: integer
  *           required: true
- *           description: Id de l'utilisateur à supprimer
+ *           description: Id de l'utilisateur
  *     responses:
  *       200:
- *         description: Succès de la suppression de l'utilisateur
+ *         description: Utilisateur supprimé avec succès
  *         content:
  *           application/json:
  *             schema:
@@ -40,7 +40,7 @@ const userController = require("@controllers/userController");
  *               userDeleteAnotherAccount:
  *                 summary: Suppression d'un autre utilisateur sans être admin
  *                 value:
- *                   error: An User can only delete his own account
+ *                   error: An user can only delete his own account
  *               tryDeleteAdminAccount:
  *                 summary: Suppression d'un admin
  *                 value:
@@ -56,8 +56,8 @@ const userController = require("@controllers/userController");
  *                   type: string
  *                   example: User not found
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  */
-router.delete("/users/:id", userController.deleteUser);
+router.delete('/users/:id', userController.delete);
 
 module.exports = router;
