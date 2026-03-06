@@ -56,7 +56,7 @@ const userController = require('@controllers/userController');
  *                   type: string
  *                   example: User not found
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  */
 router.delete('/users/:id', userController.delete);
 

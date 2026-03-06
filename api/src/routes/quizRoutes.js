@@ -45,7 +45,7 @@ const authMiddleware = require('@middleware/authMiddleware');
  *                   type: string
  *                   example: Parameters 'title' and 'description' required
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  *       403:
  *         description: Non autorisé
  *         content:
@@ -135,7 +135,7 @@ router.post('/quizzes', authMiddleware, quizController.create);
  *                   type: string
  *                   example: An user can only update his own quizzes
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  */
 router.put('/quizzes/:id', authMiddleware, quizController.update);
 
@@ -215,7 +215,7 @@ router.get('/quizzes/:id', quizController.get);
  *                   type: string
  *                   example: An user can only delete his own quizzes
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  */
 router.delete('/quizzes/:id', authMiddleware, quizController.delete);
 

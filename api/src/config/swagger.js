@@ -17,8 +17,8 @@ const options = {
                 },
             },
             responses: {
-                TokenMissing: {
-                    description: 'Token invalide',
+                InvalidOrMissingToken: {
+                    description: 'Jeton invalide ou manquant',
                     content: {
                         'application/json': {
                             schema: {
@@ -31,13 +31,13 @@ const options = {
                             },
                             examples: {
                                 missingToken: {
-                                    summary: 'Token manquant',
+                                    summary: 'Jeton manquant',
                                     value: {
                                         error: 'Missing token',
                                     },
                                 },
-                                tokenDenied: {
-                                    summary: 'Token invalide',
+                                invalidToken: {
+                                    summary: 'Jeton invalide',
                                     value: {
                                         error: 'Invalid token',
                                     },

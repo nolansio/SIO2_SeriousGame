@@ -128,7 +128,7 @@ router.post('/login', authController.login);
  *             schema:
  *               $ref: '#/components/schemas/UserFull'
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  */
 router.get('/me', authMiddleware, authController.myself);
 

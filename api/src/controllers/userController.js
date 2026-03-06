@@ -21,7 +21,7 @@ exports.delete = async (req, res) => {
 // exports.getUserById = async (req, res) => {
 //   const user = await userService.findById(req.params.id);
 //   if (!user) {
-//     return res.status(404).json({ message: 'User not found' });
+//     return res.status(404).json({ error: 'User not found' });
 //   }
 //   res.json(user);
 // };

@@ -70,7 +70,7 @@ const authMiddleware = require('@middleware/authMiddleware');
  *                   type: string
  *                   example: An user can only create a new question in his own quizzes
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  */
 router.post('/quizzes/:id/questions', authMiddleware, questionController.create);
 
@@ -117,7 +117,7 @@ router.post('/quizzes/:id/questions', authMiddleware, questionController.create)
  *                   type: string
  *                   example: An user can only delete a question in his own quizzes
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  */
 router.delete('/questions/:id', authMiddleware, questionController.delete);
 
@@ -187,7 +187,7 @@ router.delete('/questions/:id', authMiddleware, questionController.delete);
  *                   type: string
  *                   example: An User can only update a question in his own quizzes
  *       401:
- *         $ref: '#/components/responses/TokenMissing'
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
  */
 router.put('/questions/:id', authMiddleware, questionController.update);
 
