@@ -175,4 +175,52 @@ router.put("/quizzes/:id", authMiddleware, quizzController.updateQuizz);
  */
 router.get("/quizzes/:id", quizzController.getQuizz);
 
+
+/**
+ * @swagger
+ * /quizzes/{id}:
+ *   delete:
+ *     summary: Suppression d'un Quizz
+ *     tags: [Quizz]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *           required: true
+ *           description: ID du Quizz à supprimer
+ *     responses:
+ *       200:
+ *         description: Suppresion d'un Quizz avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/QuizzMinimal'
+ *       404:
+ *         description: Quizz non trouvé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Quizz not found
+ *       403:
+ *         description: Non autorisé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: An User can only delete his own quizzes
+ *       401:
+ *         $ref: '#/components/responses/TokenMissing'
+ */
+router.delete("/quizzes/:id", authMiddleware, quizzController.deleteQuizz);
+
 module.exports = router;

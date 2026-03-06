@@ -12,9 +12,11 @@ exports.createQuizz = async (req, res) => {
     const newQuizz = await quizzService.create(req.body, req.user);
     res.status(201).json(newQuizz);
   } catch (error) {
-    if (error.message === "USER_NOT_FOUND") {
+    if (error.code === "USER_NOT_FOUND") {
       return res.status(404).json({ error: error.message });
-    }
+    } else if (error.code === "FORBIDDEN") {
+      return res.status(403).json({ error: error.message });
+	}
     res.status(500).json({ error: error.message });
   }
 };
@@ -37,9 +39,9 @@ exports.updateQuizz = async (req, res) => {
     const newQuizz = await quizzService.update(req.body);
     res.status(200).json(newQuizz);
   } catch (error) {
-    if (error.message === "QUIZZ_NOT_FOUND") {
+    if (error.code === "QUIZZ_NOT_FOUND") {
       return res.status(404).json({ error: error.message });
-    } else if (error.message === "FORBIDDEN") {
+    } else if (error.code === "FORBIDDEN") {
       return res.status(403).json({ error: error.message });
     } else {
       res.status(500).json({ error: error.message });
@@ -52,17 +54,25 @@ exports.getQuizz = async (req, res) => {
     const newQuizz = await quizzService.getQuizz(req.params.id);
     res.status(200).json(newQuizz);
   } catch (error) {
-    if (error.message === "QUIZZ_NOT_FOUND") {
+    if (error.code === "QUIZZ_NOT_FOUND") {
       return res.status(404).json({ error: error.message });
     } else {
       res.status(500).json({ error: error.message });
     }
   }
 };
-// exports.getUserById = async (req, res) => {
-//   const user = await userService.findById(req.params.id);
-//   if (!user) {
-//     return res.status(404).json({ message: 'User not found' });
-//   }
-//   res.json(user);
-// };
+
+exports.deleteQuizz = async (req, res) => {
+  try {
+    const newQuizz = await quizzService.deleteQuizz(req.params.id);
+    res.status(200).json(newQuizz);
+  } catch (error) {
+    if (error.code === "QUIZZ_NOT_FOUND") {
+      return res.status(404).json({ error: error.message });
+    } else if (error.code === "FORBIDDEN") {
+      return res.status(403).json({ error: error.message });
+    } else {
+    	res.status(500).json({ error: error.message });
+	  }
+  }
+};
