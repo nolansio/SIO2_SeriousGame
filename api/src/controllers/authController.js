@@ -1,3 +1,6 @@
+require("dotenv").config({ path: ".env.local" });
+require("dotenv").config();
+
 const authService = require('@services/authService');
 const LogConnectService = require('@services/logConnectService');
 const logAttempts = {};
@@ -75,8 +78,8 @@ exports.myself = async (req, res, next) => {
 function failedLogAttempt(ip) {
     const now = Date.now();
 
-    const initial = 10 * 1000;
-    const max = 120 * 1000;
+    const initial = process.env.INITIAL_ATTEMPS * 1000;
+    const max = process.env.MAX_ATTEMPS * 1000;
 
     refreshLogAttempt();
 
