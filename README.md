@@ -13,7 +13,7 @@ Le projet est divisé en trois dossiers distincts, l'API, le jeu et l'interface 
 
 ## Technologies utilisées
 - **API** : Node.js (Express)
-- **Interface** : Node.js (Express)
+- **Interface** : Angular
 - **Jeu** : Phaser (Vite)
 - **Base de données** : MySQL
 - **Sécurité** : JWT Bearer (bcrypt)
