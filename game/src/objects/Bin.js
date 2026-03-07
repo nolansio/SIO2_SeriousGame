@@ -15,12 +15,10 @@ export default class Bin {
 
         const color = type === "VRAI" ? COLORS.true : COLORS.false;
 
-        // Corps de la corbeille
         this.body = scene.add
             .rectangle(x, y, 90, 80, color, 0.85)
             .setStrokeStyle(3, 0xffffff);
 
-        // Étiquette VRAI / FAUX
         this.label = scene.add
             .text(x, y, type, {
                 fontSize: "16px",
@@ -29,22 +27,24 @@ export default class Bin {
                 fontStyle: "bold",
             })
             .setOrigin(0.5);
-
-        // Légère oscillation pour rendre le jeu plus difficile
-        this._startOscillation();
+        // Pas d'oscillation pendant la question
     }
 
-    _startOscillation() {
-        const amplitude = 18;
-        const duration = Phaser.Math.Between(1800, 2600);
+    /**
+     * Déplace légèrement la corbeille vers une nouvelle position X
+     * Appelé par GameScene entre chaque question
+     */
+    moveTo(newX) {
+        this.baseX = newX;
+
+        this.scene.tweens.killTweensOf(this.body);
+        this.scene.tweens.killTweensOf(this.label);
 
         this.scene.tweens.add({
             targets: [this.body, this.label],
-            x: { from: this.baseX - amplitude, to: this.baseX + amplitude },
-            duration,
+            x: newX,
+            duration: 400,
             ease: "Sine.easeInOut",
-            yoyo: true,
-            repeat: -1,
         });
     }
 
