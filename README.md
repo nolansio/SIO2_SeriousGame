@@ -84,8 +84,13 @@ npm install
 ### 1. Installer les dépendances
 ```bash
 cd game
-# À compléter
+npm install
 ```
+
+### 2. Lancer le jeu
+```bash
+npm run dev
+````
 
 > À compléter
 
