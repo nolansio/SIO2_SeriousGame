@@ -75,7 +75,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getGameUrl(quiz: Quiz): string {
-    return `${this.gameBaseUrl}/?id=${quiz.id}`;
+    return `${this.gameBaseUrl}/?code=${quiz.code}`;
   }
 
   getQrImageUrl(quiz: Quiz): string {
