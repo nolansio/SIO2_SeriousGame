@@ -27,7 +27,10 @@ export class QuizService {
   }
 
   createQuestion(data: { quizId: number; title: string; answer: boolean }): Observable<Question> {
-    return this.http.post<Question>(`${this.base}/questions`, data);
+    return this.http.post<Question>(`${this.base}/quizzes/${data.quizId}/questions`, {
+      title: data.title,
+      answer: data.answer,
+    });
   }
 
   updateQuestion(id: number, data: { title: string; answer: boolean }): Observable<Question> {
