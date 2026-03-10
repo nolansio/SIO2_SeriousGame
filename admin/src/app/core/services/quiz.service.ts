@@ -14,6 +14,10 @@ export class QuizService {
     return this.http.get<Quiz>(`${this.base}/quizzes/${id}`);
   }
 
+  getAllQuizzes(): Observable<Quiz[]> {
+    return this.http.get<Quiz[]>(`${this.base}/quizzes`);
+  }
+
   createQuiz(data: { title: string; description?: string }): Observable<Quiz> {
     return this.http.post<Quiz>(`${this.base}/quizzes`, data);
   }
