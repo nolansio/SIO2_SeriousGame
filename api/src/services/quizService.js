@@ -68,6 +68,37 @@ exports.get = async (id) => {
     return quiz;
 };
 
+exports.getAll = async () => {
+    return await Quiz.findAll({
+        include: [
+            {
+                model: Question,
+                as: "questions",
+            },
+        ],
+    });
+};
+
+exports.getByCode = async (code) => {
+    const quiz = await Quiz.findOne({
+        where: { code },
+        include: [
+            {
+                model: Question,
+                as: "questions",
+            },
+        ],
+    });
+
+    if (!quiz) {
+        const error = new Error("Quiz not found");
+        error.code = "QUIZ_NOT_FOUND";
+        throw error;
+    }
+
+    return quiz;
+};
+
 exports.delete = async (id, user) => {
     const quiz = await Quiz.findByPk(id, null);
 
