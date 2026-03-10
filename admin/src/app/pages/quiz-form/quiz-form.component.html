@@ -1,0 +1,266 @@
+<div class="container py-4" style="max-width: 760px;">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/dashboard">Mes quizz</a></li>
+      <li class="breadcrumb-item active">{{ isNew ? 'Nouveau quizz' : title }}</li>
+    </ol>
+  </nav>
+
+  <!-- Loading -->
+  <div *ngIf="loadingQuiz()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <div *ngIf="!loadingQuiz()">
+
+    <!-- MODE CRÉATION -->
+    <div *ngIf="isNew">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+          <h5 class="mb-0 fw-semibold">Créer un quizz</h5>
+        </div>
+        <div class="card-body">
+
+          <div *ngIf="error()" class="alert alert-danger py-2">{{ error() }}</div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Titre <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="title"
+              placeholder="ex: Les grandes dates de la Révolution"
+              maxlength="100"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="description"
+              rows="2"
+              placeholder="ex: Révision sur la vie de Voltaire"
+              maxlength="500"
+            ></textarea>
+          </div>
+
+          <!-- Questions dynamiques -->
+          <label class="form-label fw-semibold">Questions</label>
+
+          <div *ngFor="let q of newQuestions(); let i = index; trackBy: trackByIndex" class="card mb-2 border">
+            <div class="card-body py-2 px-3">
+              <div class="d-flex gap-2 align-items-center mb-2">
+                <span class="text-muted small">{{ i + 1 }}.</span>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  [value]="q.title"
+                  (input)="updateNewQuestion(i, 'title', $any($event.target).value)"
+                  placeholder="ex: Voltaire est né en 1694"
+                />
+                <button
+                  *ngIf="newQuestions().length > 1"
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="removeNewQuestionField(i)"
+                  title="Supprimer"
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <div class="d-flex gap-3">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    [value]="true"
+                    [checked]="q.answer === true"
+                    (change)="updateNewQuestion(i, 'answer', true)"
+                    [name]="'answer' + i"
+                    [id]="'true' + i"
+                  />
+                  <label class="form-check-label text-success fw-semibold" [for]="'true' + i">VRAI</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    [value]="false"
+                    [checked]="q.answer === false"
+                    (change)="updateNewQuestion(i, 'answer', false)"
+                    [name]="'answer' + i"
+                    [id]="'false' + i"
+                  />
+                  <label class="form-check-label text-danger fw-semibold" [for]="'false' + i">FAUX</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-outline-secondary btn-sm mb-4" (click)="addNewQuestionField()">
+            <i class="bi bi-plus-lg me-1"></i>Ajouter une question
+          </button>
+
+          <div class="d-flex gap-2">
+            <button
+              class="btn btn-primary"
+              (click)="createQuiz()"
+              [disabled]="saving() || !title.trim() || !description.trim()"
+            >
+              <span *ngIf="saving()" class="spinner-border spinner-border-sm me-2"></span>
+              {{ saving() ? 'Création...' : 'Créer le quizz' }}
+            </button>
+            <a routerLink="/dashboard" class="btn btn-outline-secondary">Annuler</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- MODE ÉDITION -->
+    <div *ngIf="!isNew">
+
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+          <h5 class="mb-0 fw-semibold">Modifier le quizz</h5>
+        </div>
+        <div class="card-body">
+
+          <div *ngIf="error()" class="alert alert-danger py-2">{{ error() }}</div>
+          <div *ngIf="success()" class="alert alert-success py-2">{{ success() }}</div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Titre <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="title"
+              maxlength="100"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="description"
+              rows="2"
+              maxlength="500"
+            ></textarea>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button
+              class="btn btn-primary"
+              (click)="saveQuiz()"
+              [disabled]="saving() || !title.trim() || !description.trim()"
+            >
+              <span *ngIf="saving()" class="spinner-border spinner-border-sm me-2"></span>
+              Enregistrer
+            </button>
+            <a routerLink="/dashboard" class="btn btn-outline-secondary">Retour</a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Liste des questions -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-semibold mb-0">
+          Questions
+          <span class="badge bg-secondary ms-1">{{ questions().length }}</span>
+        </h5>
+      </div>
+
+      <div class="list-group mb-4">
+        <div *ngIf="questions().length === 0" class="list-group-item text-muted text-center py-3">
+          Aucune question pour le moment.
+        </div>
+
+        <div class="list-group-item" *ngFor="let q of questions(); let i = index">
+
+          <!-- Lecture -->
+          <div *ngIf="editingQuestionId() !== q.id" class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="text-muted small me-2">{{ i + 1 }}.</span>
+              <span>{{ q.title }}</span>
+              <span class="badge ms-2" [class.bg-success]="q.answer" [class.bg-danger]="!q.answer">
+                {{ q.answer ? 'VRAI' : 'FAUX' }}
+              </span>
+            </div>
+            <div class="d-flex gap-1">
+              <button class="btn btn-sm btn-outline-primary" (click)="startEdit(q)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" (click)="deleteQuestion(q.id)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Édition inline -->
+          <div *ngIf="editingQuestionId() === q.id">
+            <div class="mb-2">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editTitle" />
+            </div>
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="true" [(ngModel)]="editAnswer" [name]="'editAnswer' + q.id" [id]="'editTrue' + q.id" />
+                <label class="form-check-label text-success fw-semibold" [for]="'editTrue' + q.id">VRAI</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="false" [(ngModel)]="editAnswer" [name]="'editAnswer' + q.id" [id]="'editFalse' + q.id" />
+                <label class="form-check-label text-danger fw-semibold" [for]="'editFalse' + q.id">FAUX</label>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-primary" (click)="saveEdit(q.id)">Enregistrer</button>
+              <button class="btn btn-sm btn-outline-secondary" (click)="cancelEdit()">Annuler</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Ajouter une question -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h6 class="mb-0 fw-semibold">Ajouter une question</h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="newQuestionTitle"
+              placeholder="ex: Voltaire est né en 1694"
+              maxlength="500"
+            />
+          </div>
+          <div class="d-flex align-items-center gap-4 mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" [value]="true" [(ngModel)]="newQuestionAnswer" name="newAnswer" id="newTrue" />
+              <label class="form-check-label text-success fw-semibold" for="newTrue">VRAI</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" [value]="false" [(ngModel)]="newQuestionAnswer" name="newAnswer" id="newFalse" />
+              <label class="form-check-label text-danger fw-semibold" for="newFalse">FAUX</label>
+            </div>
+          </div>
+          <button
+            class="btn btn-success"
+            (click)="addQuestion()"
+            [disabled]="addingQuestion() || !newQuestionTitle.trim()"
+          >
+            <span *ngIf="addingQuestion()" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!addingQuestion()" class="bi bi-plus-lg me-1"></i>
+            Ajouter
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
