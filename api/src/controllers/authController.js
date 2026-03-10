@@ -6,12 +6,6 @@ const logService = require('@services/logService');
 const logAttempts = {};
 
 exports.register = async (req, res) => {
-    const { attempts, duration } = failedLogAttempt(req.ip);
-
-    if (attempts >= 3) {
-        return res.status(429).json({ error: `Too many requests, try again in ${duration} seconds` });
-    }
-
     try {
         const { email, password } = req.body;
 
