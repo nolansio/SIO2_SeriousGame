@@ -13,6 +13,12 @@ export const routes: Routes = [
       import('./pages/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
   {
+    path: 'quiz/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/quiz-form/quiz-form.component').then((m) => m.QuizFormComponent),
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',

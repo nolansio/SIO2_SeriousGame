@@ -21,9 +21,10 @@ exports.create = async (data, user) => {
 
     return await Quiz.create({
         title: data.title,
+        description: data.description,
         answer: data.answer,
         code: code,
-        userId: user.id
+        userId: user.id,
     });
 };
 
