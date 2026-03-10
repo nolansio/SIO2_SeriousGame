@@ -1,0 +1,104 @@
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 fw-bold mb-0">Mes quizz</h1>
+      <small class="text-muted">{{ auth.currentUser()?.email }}</small>
+      <span *ngIf="auth.isAdmin()" class="badge bg-danger ms-2">Admin</span>
+    </div>
+    <div class="d-flex gap-2">
+      <a routerLink="/quiz/new" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>Nouveau quizz
+      </a>
+      <button class="btn btn-outline-secondary" (click)="auth.logout()">
+        Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading() && quizzes().length === 0" class="text-center py-5">
+    <p class="text-muted fs-5">Aucun quizz pour le moment.</p>
+    <a routerLink="/quiz/new" class="btn btn-primary">Créer mon premier quizz</a>
+  </div>
+
+  <!-- Quiz list -->
+  <div *ngIf="!loading() && quizzes().length > 0" class="row g-3">
+    <div class="col-md-6 col-lg-4" *ngFor="let quiz of quizzes()">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <h5 class="card-title fw-semibold mb-1">{{ quiz.title }}</h5>
+            <span class="badge bg-secondary font-monospace">{{ quiz.code }}</span>
+          </div>
+          <p class="card-text text-muted small mb-2">
+            {{ quiz.description || 'Aucune description' }}
+          </p>
+          <p class="text-muted small mb-0">
+            <i class="bi bi-question-circle me-1"></i>
+            {{ quiz.questions?.length ?? 0 }} question(s)
+          </p>
+        </div>
+        <div class="card-footer bg-transparent d-flex gap-2">
+          <a [routerLink]="['/quiz', quiz.id]" class="btn btn-sm btn-outline-primary flex-fill">
+            <i class="bi bi-pencil me-1"></i>Modifier
+          </a>
+          <button class="btn btn-sm btn-outline-secondary" (click)="openQr(quiz)" title="QR Code">
+            <i class="bi bi-qr-code"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="confirmDelete(quiz.id)" title="Supprimer">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal suppression -->
+<div *ngIf="deleteConfirmId() !== null" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Confirmer la suppression</h5>
+        <button type="button" class="btn-close" (click)="cancelDelete()"></button>
+      </div>
+      <div class="modal-body">
+        Cette action est irréversible. Le quizz et toutes ses questions seront supprimés.
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-secondary" (click)="cancelDelete()">Annuler</button>
+        <button class="btn btn-danger" (click)="doDelete(deleteConfirmId()!)">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal QR Code -->
+<div *ngIf="qrModalQuiz() !== null" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">QR Code — {{ qrModalQuiz()!.title }}</h5>
+        <button type="button" class="btn-close" (click)="closeQr()"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img [src]="getQrImageUrl(qrModalQuiz()!)" alt="QR Code" class="img-fluid mb-3" />
+        <p class="text-muted small font-monospace mb-0">{{ getGameUrl(qrModalQuiz()!) }}</p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center">
+        <a [href]="getQrImageUrl(qrModalQuiz()!)" download="qrcode.png" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-download me-1"></i>Télécharger
+        </a>
+        <button class="btn btn-secondary btn-sm" (click)="closeQr()">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
