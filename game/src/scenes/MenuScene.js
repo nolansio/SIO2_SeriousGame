@@ -69,7 +69,7 @@ export default class MenuScene extends Phaser.Scene {
       .text(
         width / 2,
         530,
-        'Lancez la boulette dans la bonne corbeille !\n          ✅ VRAI          ❌ FAUX',
+        'Lancez la boulette dans la bonne corbeille !\n✅ VRAI          ❌ FAUX',
         {
           fontSize: '14px',
           color: '#666688',
