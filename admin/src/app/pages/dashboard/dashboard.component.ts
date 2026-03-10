@@ -28,8 +28,20 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.auth.loadMe().subscribe({
       next: (user) => {
-        this.quizzes.set(user.quizzes ?? []);
-        this.loading.set(false);
+        if (user.role === 'ADMIN') {
+          this.quizService.getAllQuizzes().subscribe({
+            next: (quizzes) => {
+              this.quizzes.set(quizzes);
+              this.loading.set(false);
+            },
+            error: () => {
+              this.auth.logout();
+            },
+          });
+        } else {
+          this.quizzes.set(user.quizzes ?? []);
+          this.loading.set(false);
+        }
       },
       error: () => {
         this.auth.logout();
