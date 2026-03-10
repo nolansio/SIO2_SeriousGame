@@ -3,6 +3,7 @@ const router = express.Router();
 
 const quizController = require('@controllers/quizController');
 const authMiddleware = require('@middleware/authMiddleware');
+const authorizeRoles = require("@middleware/authorizeRoles");
 
 // router.get('/users/:id', userController.getUserById);
 
@@ -170,7 +171,56 @@ router.put('/quizzes/:id', authMiddleware, quizController.update);
  *                   type: string
  *                   example: Quiz not found
  */
-router.get('/quizzes/:id', quizController.get);
+router.get("/quizzes/:id", authMiddleware, quizController.get);
+
+/**
+ * @swagger
+ * /quizzes:
+ *   get:
+ *     summary: Récupération de tous les quizz (admin uniquement)
+ *     tags: [Quiz]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Liste de tous les quizz
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/QuizFull'
+ *       401:
+ *         $ref: '#/components/responses/InvalidOrMissingToken'
+ *       403:
+ *         description: Non autorisé
+ */
+router.get('/quizzes', authMiddleware, authorizeRoles('ADMIN'), quizController.getAll);
+
+/**
+ * @swagger
+ * /quizzes/{code}:
+ *   get:
+ *     summary: Récupération d'un quizz par son code
+ *     tags: [Quiz]
+ *     parameters:
+ *       - in: path
+ *         name: code
+ *         schema:
+ *           type: string
+ *           required: true
+ *           description: Code unique du quizz
+ *     responses:
+ *       200:
+ *         description: Quiz récupéré avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/QuizFull'
+ *       404:
+ *         description: Quiz non trouvé
+ */
+router.get('/quizzes/:code', quizController.getByCode);
 
 /**
  * @swagger
