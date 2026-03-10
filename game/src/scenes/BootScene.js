@@ -47,7 +47,7 @@ export default class BootScene extends Phaser.Scene {
         this.inputButton.style.borderRadius = '10px';
         this.inputButton.style.textAlign = 'center';
         this.inputButton.style.outline = 'none';
-        this.inputButton.style.cursor = 'pointer';
+        this.inputButton.style.cursor = 'text';
 
         this.inputButton.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
