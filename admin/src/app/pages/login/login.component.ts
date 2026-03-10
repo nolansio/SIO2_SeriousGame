@@ -1,0 +1,40 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './login.component.html',
+})
+export class LoginComponent {
+  email = '';
+  password = '';
+  error = '';
+  loading = false;
+
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+  ) {}
+
+  onSubmit(): void {
+    this.error = '';
+    this.loading = true;
+
+    this.auth.login({ email: this.email, password: this.password }).subscribe({
+      next: () => {
+        this.auth.loadMe().subscribe(() => {
+          this.router.navigate(['/dashboard']);
+        });
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = err.error?.error ?? 'Identifiants invalides. Veuillez réessayer.';
+      },
+    });
+  }
+}
