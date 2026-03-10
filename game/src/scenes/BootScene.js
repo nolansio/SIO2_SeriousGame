@@ -95,6 +95,8 @@ export default class BootScene extends Phaser.Scene {
             this._hideInput();
 
             this.registry.set("quiz", quiz);
+
+            history.pushState(null, '', `?id=${id}`);
             this.scene.start(SCENES.MENU);
         } catch (err) {
             this._showMessage(err.message, true);
