@@ -5,8 +5,8 @@ export default class APIService {
      * Récupère un quiz par son id (paramètre URL ?id=...)
      * Retourne : { id, title, description, questions: [{ id, enonce, reponse }] }
      */
-    static async fetchQuizById(id) {
-        const response = await fetch(`${API_BASE_URL}/quizzes/${id}`);
+    static async fetchQuizByCode(code) {
+        const response = await fetch(`${API_BASE_URL}/quizzes/code/${code}`);
 
         if (!response.ok) {
             throw new Error(
@@ -17,7 +17,9 @@ export default class APIService {
         const quiz = await response.json();
 
         if (!quiz || !quiz.questions || quiz.questions.length === 0) {
-            throw new Error(`Quiz introuvable ou sans questions (id: ${id})`);
+            throw new Error(
+                `Quiz introuvable ou sans questions (code: ${code})`,
+            );
         }
 
         return quiz;

@@ -220,7 +220,7 @@ router.get('/quizzes', authMiddleware, authorizeRoles('ADMIN'), quizController.g
  *       404:
  *         description: Quiz non trouvé
  */
-router.get('/quizzes/:code', quizController.getByCode);
+router.get("/quizzes/code/:code", quizController.getByCode);
 
 /**
  * @swagger
