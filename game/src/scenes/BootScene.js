@@ -8,6 +8,13 @@ export default class BootScene extends Phaser.Scene {
     }
 
     create() {
+        this.add.text(this.scale.width / 2, 100, "PaperQuiz", {
+            fontFamily: 'monospace',
+            fontSize: 60,
+            color: '#ffffff',
+            fontWeight: 'bold'
+        }).setOrigin(0.5);
+
         const { width, height } = this.scale;
 
         this.loadingText = this.add
@@ -100,6 +107,7 @@ export default class BootScene extends Phaser.Scene {
             this.scene.start(SCENES.MENU);
         } catch (err) {
             this._showMessage(err.message, true);
+            this.inputButton.value = '';
             this._showInput();
         }
     }
