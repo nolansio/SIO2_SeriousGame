@@ -1,10 +1,6 @@
-import { API_BASE_URL } from "../config.js";
+import { API_BASE_URL, SCENES } from "../config.js";
 
 export default class APIService {
-    /**
-     * Récupère un quiz par son id (paramètre URL ?id=...)
-     * Retourne : { id, title, description, questions: [{ id, enonce, reponse }] }
-     */
     static async fetchQuizByCode(code) {
         const response = await fetch(`${API_BASE_URL}/quizzes/code/${code}`);
 
@@ -22,9 +18,14 @@ export default class APIService {
         const quiz = await response.json();
 
         if (!quiz || !quiz.questions || quiz.questions.length === 0) {
-            throw new Error(
-                `Quiz introuvable ou sans questions (code: ${code})`,
-            );
+            let error = new Error(response.statusText);
+            error.status = response.status;
+
+            if (error.status === 404) {
+                error = new Error('Code de quiz invalide');
+            }
+
+            throw error;
         }
 
         return quiz;

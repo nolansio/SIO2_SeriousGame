@@ -51,10 +51,10 @@ export default class BootScene extends Phaser.Scene {
 
         this.inputButton.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                const id = this.inputButton.value.trim();
+                const code = this.inputButton.value.trim();
 
-                if (id) {
-                    this._loadQuizWithId(id);
+                if (code) {
+                    this._loadQuizWithCode(code);
                 }
             }
         });
@@ -76,6 +76,11 @@ export default class BootScene extends Phaser.Scene {
             this.scene.start(SCENES.MENU);
         } catch (err) {
             this._showMessage(err.message, true);
+
+            history.pushState(null, '', window.location.pathname);
+
+            this.loadingText.setText('');
+            this._showInput();
         }
     }
 
@@ -92,20 +97,21 @@ export default class BootScene extends Phaser.Scene {
         }
     }
 
-    async _loadQuizWithId(id) {
+    async _loadQuizWithCode(code) {
         this._showMessage("⏳ Chargement du quiz...");
 
         try {
-            const quiz = await APIService.fetchQuizByCode(id);
+            const quiz = await APIService.fetchQuizByCode(code);
             this._hideInput();
 
             this.registry.set("quiz", quiz);
 
-            history.pushState(null, '', `?id=${id}`);
+            history.pushState(null, '', `?code=${code}`);
             this.scene.start(SCENES.MENU);
         } catch (err) {
             this._showMessage(err.message, true);
             this.inputButton.value = '';
+
             this._showInput();
         }
     }
