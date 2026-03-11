@@ -96,7 +96,7 @@ export default class BootScene extends Phaser.Scene {
         this._showMessage("⏳ Chargement du quiz...");
 
         try {
-            const quiz = await APIService.fetchQuizById(id);
+            const quiz = await APIService.fetchQuizByCode(id);
             this._hideInput();
 
             this.registry.set("quiz", quiz);
