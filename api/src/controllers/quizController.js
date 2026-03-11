@@ -53,6 +53,27 @@ exports.get = async (req, res) => {
     }
 };
 
+exports.getAll = async (req, res) => {
+    try {
+        const quizzes = await quizService.getAll();
+        res.status(200).json(quizzes);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.getByCode = async (req, res) => {
+    try {
+        const quiz = await quizService.getByCode(req.params.code);
+        res.status(200).json(quiz);
+    } catch (error) {
+        if (error.code === "QUIZ_NOT_FOUND") {
+            return res.status(404).json({ error: error.message });
+        }
+        res.status(500).json({ error: error.message });
+    }
+};
+
 exports.delete = async (req, res) => {
     try {
         const quiz = await quizService.delete(req.params.id, req.user);

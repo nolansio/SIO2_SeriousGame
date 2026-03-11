@@ -21,9 +21,10 @@ exports.create = async (data, user) => {
 
     return await Quiz.create({
         title: data.title,
+        description: data.description,
         answer: data.answer,
         code: code,
-        userId: user.id
+        userId: user.id,
     });
 };
 
@@ -61,6 +62,37 @@ exports.get = async (id) => {
         const error = new Error('Quiz not found');
         error.code = 'QUIZ_NOT_FOUND';
 
+        throw error;
+    }
+
+    return quiz;
+};
+
+exports.getAll = async () => {
+    return await Quiz.findAll({
+        include: [
+            {
+                model: Question,
+                as: "questions",
+            },
+        ],
+    });
+};
+
+exports.getByCode = async (code) => {
+    const quiz = await Quiz.findOne({
+        where: { code },
+        include: [
+            {
+                model: Question,
+                as: "questions",
+            },
+        ],
+    });
+
+    if (!quiz) {
+        const error = new Error("Quiz not found");
+        error.code = "QUIZ_NOT_FOUND";
         throw error;
     }
 

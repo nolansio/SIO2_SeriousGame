@@ -62,17 +62,15 @@ export default class BootScene extends Phaser.Scene {
 
     async _loadQuiz() {
         const params = new URLSearchParams(window.location.search);
-        const id = params.get("id");
+        const code = params.get("code");
 
-        if (!id) {
+        if (!code) {
             this._showInput();
             return;
         }
 
         try {
-            const quiz = await APIService.fetchQuizById(id);
-
-            // Stocke le quiz dans le registry (accessible depuis toutes les scènes)
+            const quiz = await APIService.fetchQuizByCode(code);
             this.registry.set("quiz", quiz);
 
             this.scene.start(SCENES.MENU);
