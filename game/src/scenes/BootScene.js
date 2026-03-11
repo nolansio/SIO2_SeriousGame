@@ -15,17 +15,15 @@ export default class BootScene extends Phaser.Scene {
             fontWeight: 'bold'
         }).setOrigin(0.5);
 
-        const { width, height } = this.scale;
-
-        this.loadingText = this.add
-            .text(width / 2, height / 2, "⏳ Chargement du quiz...", {
-                fontSize: "20px",
-                color: "#ffffff",
-                fontFamily: "monospace",
-            })
-            .setOrigin(0.5);
+        this.loadingText = this.add.text(this.scale.width / 2, this.scale.height / 2, "⏳ Chargement du quiz...", {
+            fontSize: "20px",
+            color: "#ffffff",
+            fontFamily: "monospace",
+        }).setOrigin(0.5);
 
         this.inputButton = document.createElement('input');
+        this.messageInput = document.createElement('p');
+
         this._setupInput();
 
         this._loadQuiz();
@@ -33,9 +31,11 @@ export default class BootScene extends Phaser.Scene {
 
     _setupInput() {
         this.inputButton.type = 'text';
-        this.inputButton.placeholder = 'Code du quiz';
+        this.inputButton.placeholder = 'COLD-WAR-2026';
         this.inputButton.style.position = 'absolute';
-        this.inputButton.style.top = `${this.loadingText.y + this.loadingText.height - 60}px`;
+        this.inputButton.style.left = '50%';
+        this.inputButton.style.top = `${this.scale.height / 2}px`;
+        this.inputButton.style.transform = 'translate(-50%, -50%)';
         this.inputButton.style.width = '220px';
         this.inputButton.style.height = '55px';
         this.inputButton.style.fontSize = '22px';
@@ -48,6 +48,22 @@ export default class BootScene extends Phaser.Scene {
         this.inputButton.style.textAlign = 'center';
         this.inputButton.style.outline = 'none';
         this.inputButton.style.cursor = 'text';
+
+        this.messageInput.style.position = 'absolute';
+        this.messageInput.style.whiteSpace = 'nowrap';
+
+        this.messageInput.style.left = '50%';
+        this.messageInput.style.top = `${this.scale.height / 2 + 25}px`;
+        this.messageInput.style.transform = 'translateX(-50%)';
+
+        this.messageInput.style.fontSize = '18px';
+        this.messageInput.style.fontFamily = 'monospace';
+        this.messageInput.style.textAlign = 'center';
+        this.messageInput.style.margin = '0';
+        this.messageInput.style.padding = '10px';
+
+        this.messageInput.style.userSelect = 'none';
+        this.messageInput.style.pointerEvents = 'none';
 
         this.inputButton.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
@@ -86,7 +102,9 @@ export default class BootScene extends Phaser.Scene {
 
     _showInput() {
         this.loadingText.setText('');
+
         document.body.appendChild(this.inputButton);
+        document.body.appendChild(this.messageInput);
 
         this.inputButton.focus();
     }
@@ -94,6 +112,10 @@ export default class BootScene extends Phaser.Scene {
     _hideInput() {
         if (this.inputButton.parentNode) {
             document.body.removeChild(this.inputButton);
+        }
+
+        if (this.messageInput.parentNode) {
+            document.body.removeChild(this.messageInput);
         }
     }
 
@@ -112,30 +134,19 @@ export default class BootScene extends Phaser.Scene {
             this._showMessage(err.message, true);
             this.inputButton.value = '';
 
-            this._showInput();
+            this.inputButton.focus();
         }
     }
 
     _showMessage(content, isError = false) {
-        if (this.messageText) {
-            this.messageText.destroy();
-        }
-
         let color = '#ffffff';
 
         if (isError) {
-            color = '#e74c3c';
             content = `❌ ${content}`;
+            color = '#e74c3c';
         }
 
-        const x = this.scale.width / 2;
-        const y = this.loadingText.y + this.loadingText.height + 35;
-
-        this.messageText = this.add.text(x, y, content, {
-            fontSize: '18px',
-            color: color,
-            fontFamily: 'monospace',
-            align: 'center'
-        }).setOrigin(0.5);
+        this.messageInput.textContent = content;
+        this.messageInput.style.color = color;
     }
 }
