@@ -3,9 +3,10 @@ import { GAME_WIDTH, GAME_HEIGHT, COLORS } from "./config.js";
 
 // Import des scènes
 import BootScene from "./scenes/BootScene.js";
-import MenuScene from "./scenes/MenuScene.js";
 import GameScene from "./scenes/GameScene.js";
+import MenuScene from "./scenes/MenuScene.js";
 import ResultScene from "./scenes/ResultScene.js";
+import Preloader from "./scenes/Preloader.js";
 
 const config = {
     type: Phaser.AUTO,
@@ -19,7 +20,13 @@ const config = {
         width: GAME_WIDTH,
         height: GAME_HEIGHT,
     },
-    scene: [BootScene, MenuScene, GameScene, ResultScene],
+    physics: {
+        default: "matter",
+    },
+    matter: {
+        debug: false,
+    },
+    scene: [BootScene, Preloader, MenuScene, GameScene, ResultScene],
 };
 
 new Phaser.Game(config);

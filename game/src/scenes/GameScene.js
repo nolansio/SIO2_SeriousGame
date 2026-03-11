@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { SCENES, COLORS, GAME_WIDTH, GAME_HEIGHT } from "../config.js";
-import PaperBall from "../objects/PaperBall.js";
-import Bin from "../objects/Bin.js";
+import { PaperBall } from "../objects/PaperBall.js";
+import { Bin } from "../objects/Bin.js";
 
 // Layout
 // Plan 3 (loin)   : mur du fond + corbeilles  → haut de l'écran
@@ -24,6 +24,11 @@ export default class GameScene extends Phaser.Scene {
         this.currentIndex = 0;
         this.score = 0;
         this.waiting = false;
+
+        // Catégorie de collision avec le monde
+        this.worldBounds = 0x0001;
+        this.ballLayer = this.matter.world.nextCategory();
+        this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height);
 
         this._drawBackground(width, height);
 
@@ -108,18 +113,57 @@ export default class GameScene extends Phaser.Scene {
             wall.lineBetween(0, y, width, y);
 
         // Ligne d'horizon (jonction mur / sol)
-        this.add.rectangle(width / 2, FLOOR_Y, width, 3, 0x5a5a9a).setDepth(4);
+        // this.add.rectangle(width / 2, FLOOR_Y, width, 3, 0x5a5a9a).setDepth(4);
 
-        // Plan 2 : sol en perspective
-        this.add
-            .rectangle(
-                width / 2,
-                FLOOR_Y + (height - FLOOR_Y) / 2,
-                width,
-                height - FLOOR_Y,
-                0x1a1a2e,
-            )
-            .setDepth(1);
+        const mainWidth = GAME_WIDTH / 1.4;
+        const mainX = GAME_WIDTH / 2;
+        const mainY = FLOOR_Y;
+        const angleSize = 500; // L'écartement horizontal (vers l'extérieur)
+        const heightSize = 500; // La longueur verticale (vers le bas)
+
+        this.add.rectangle(mainX, mainY, mainWidth, 3, 0x5a5a9a).setDepth(4);
+
+        // // Diago
+        // this.add
+        //     .line(
+        //         mainX - mainWidth / 2,
+        //         mainY,
+        //         0,
+        //         0,
+        //         -angleSize,
+        //         heightSize,
+        //         0x5a5a9a,
+        //     )
+        //     .setLineWidth(3)
+        //     .setOrigin(0, 0)
+        //     .setDepth(4);
+
+        // this.add
+        //     .line(
+        //         mainX + mainWidth / 2,
+        //         mainY,
+        //         0,
+        //         0,
+        //         angleSize,
+        //         heightSize,
+        //         0x5a5a9a,
+        //     )
+        //     .setLineWidth(3)
+        //     .setOrigin(0, 0)
+        //     .setDepth(4);
+
+        // Mur
+        // this.add
+        //     .line(mainX - mainWidth / 2, mainY, 0, 0, 0, -heightSize, 0x5a5a9a)
+        //     .setLineWidth(3)
+        //     .setOrigin(0, 0)
+        //     .setDepth(4);
+
+        // this.add
+        //     .line(mainX + mainWidth / 2, mainY, 0, 0, 0, -heightSize, 0x5a5a9a)
+        //     .setLineWidth(3)
+        //     .setOrigin(0, 0)
+        //     .setDepth(4);
 
         const floor = this.add.graphics().setDepth(2);
         const vanishX = width / 2;
@@ -157,30 +201,26 @@ export default class GameScene extends Phaser.Scene {
 
     // Boucle : détection collision
     update() {
-        if (!this.ball?.isFlying || this.waiting) return;
-
-        const bx = this.ball.circle.x;
-        const by = this.ball.circle.y;
-        const vy = this.ball._vy;
-        const { width, height } = this.scale;
-
-        // Balle descend (vy > 0) et franchit le Y de l'ouverture par le haut → vérifier
-        if (vy > 0 && by >= BIN_OPENING_Y && !this.ball._checkedBin) {
-            this.ball._checkedBin = true;
-
-            if (this.binVrai.contains(bx) || this.binFaux.contains(bx)) {
-                this.ball.isFlying = false;
-                this._onScore(bx);
-                return;
-            }
-            // Raté → la balle continue librement (sort par le haut ou retombe)
-        }
-
-        // Sortie d'écran → raté
-        if (by > height + 80 || bx < -80 || bx > width + 80 || by < -80) {
-            this.ball.isFlying = false;
-            this._onMiss();
-        }
+        // if (!this.ball?.isFlying || this.waiting) return;
+        // const bx = this.ball.circle.x;
+        // const by = this.ball.circle.y;
+        // const vy = this.ball._vy;
+        // const { width, height } = this.scale;
+        // // Balle descend (vy > 0) et franchit le Y de l'ouverture par le haut → vérifier
+        // if (vy > 0 && by >= BIN_OPENING_Y && !this.ball._checkedBin) {
+        //     this.ball._checkedBin = true;
+        //     if (this.binVrai.contains(bx) || this.binFaux.contains(bx)) {
+        //         this.ball.isFlying = false;
+        //         this._onScore(bx);
+        //         return;
+        //     }
+        //     // Raté → la balle continue librement (sort par le haut ou retombe)
+        // }
+        // // Sortie d'écran → raté
+        // if (by > height + 80 || bx < -80 || bx > width + 80 || by < -80) {
+        //     this.ball.isFlying = false;
+        //     this._onMiss();
+        // }
     }
 
     _onScore(bx) {
@@ -195,7 +235,7 @@ export default class GameScene extends Phaser.Scene {
             (chosenType === "VRAI" && correctAnswer === true) ||
             (chosenType === "FAUX" && correctAnswer === false);
 
-        bin.swallowBall(this.ball.circle);
+        // bin.swallowBall(this.ball.circle);
         bin.highlight(isCorrect);
         if (isCorrect) this.score++;
         this._updateScore();

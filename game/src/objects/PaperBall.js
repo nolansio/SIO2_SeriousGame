@@ -8,12 +8,16 @@ const SPEED_SCALE = 0.8;
 const SCALE_NEAR = 1.0; // taille au départ (proche joueur)
 const SCALE_MIN = 1.0 / 3.0; // taille minimale = taille d'origine / 3
 
-export default class PaperBall {
+export class PaperBall extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, onThrow) {
+        super(scene.matter.world, x, y - 200, "paper-ball");
         this.scene = scene;
+        this.scene.add.existing(this);
         this.startX = x;
         this.startY = y;
         this.onThrow = onThrow;
+        this.setCollisionCategory(this.scene.ballLayer);
+        this.setCollidesWith(this.scene.worldBounds);
 
         this.isDragging = false;
         this.isFlying = false;
@@ -25,43 +29,62 @@ export default class PaperBall {
         this._vy = 0;
 
         // Scale courant : ne peut que décroître une fois lancée
-        this._currentScale = SCALE_NEAR;
+        // this._currentScale = SCALE_NEAR;
 
-        this.circle = scene.add
-            .circle(x, y, 22, COLORS.paper)
-            .setStrokeStyle(2, 0xccccaa)
-            .setDepth(10);
+        // this.circle = scene.add
+        //     .circle(x, y, 22, COLORS.paper)
+        //     .setStrokeStyle(2, 0xccccaa)
+        //     .setDepth(10);
 
         this.aimLine = scene.add.graphics().setDepth(9);
-        this._setupInput();
+        // this._setupInput();
         scene.events.on("update", this._update, this);
+        this.scene.matter.world.on(
+            "collisionstart",
+            this.onCollideStart.bind(this),
+        );
     }
 
     _update() {
-        if (!this.isFlying) return;
+        // if (!this.isFlying) return;
+        // this._vy += GRAVITY;
+        // const newX = this.circle.x + this._vx;
+        // const newY = this.circle.y + this._vy;
+        // this.circle.setPosition(newX, newY);
+        // // Perspective : rétrécit proportionnellement à la montée
+        // // t = 0 au départ, augmente en montant
+        // const t = Phaser.Math.Clamp(
+        //     (this.startY - newY) / (this.startY - 0),
+        //     0,
+        //     1,
+        // );
+        // const wantScale = Phaser.Math.Linear(SCALE_NEAR, SCALE_MIN, t);
+        // // La balle ne peut que rétrécir : on prend le minimum atteint
+        // // → elle ne regrandit pas quand elle redescend, mais ne passe pas sous SCALE_MIN
+        // this._currentScale = Math.max(
+        //     SCALE_MIN,
+        //     Math.min(this._currentScale, wantScale),
+        // );
+        // this.circle.setScale(this._currentScale);
+        // this.circle.setDepth(Phaser.Math.Linear(12, 4, t));
+    }
 
-        this._vy += GRAVITY;
-        const newX = this.circle.x + this._vx;
-        const newY = this.circle.y + this._vy;
-        this.circle.setPosition(newX, newY);
+    onCollideStart(event) {
+        event.pairs.forEach((pair) => {
+            let bodyA = pair.bodyA;
+            let bodyB = pair.bodyB;
+            const bodies = [bodyA, bodyB];
+            const categories = [
+                bodyA.collisionFilter.category,
+                bodyB.collisionFilter.category,
+            ];
 
-        // Perspective : rétrécit proportionnellement à la montée
-        // t = 0 au départ, augmente en montant
-        const t = Phaser.Math.Clamp(
-            (this.startY - newY) / (this.startY - 0),
-            0,
-            1,
-        );
-        const wantScale = Phaser.Math.Linear(SCALE_NEAR, SCALE_MIN, t);
-
-        // La balle ne peut que rétrécir : on prend le minimum atteint
-        // → elle ne regrandit pas quand elle redescend, mais ne passe pas sous SCALE_MIN
-        this._currentScale = Math.max(
-            SCALE_MIN,
-            Math.min(this._currentScale, wantScale),
-        );
-        this.circle.setScale(this._currentScale);
-        this.circle.setDepth(Phaser.Math.Linear(12, 4, t));
+            // if (
+            //     bodies.includes(this.body) &&
+            //     !categories.includes(this.scene.worldBounds)
+            // ) {
+            // }
+        });
     }
 
     _setupInput() {
@@ -110,19 +133,19 @@ export default class PaperBall {
             const dist = Math.sqrt(dx * dx + dy * dy);
             const dt = last.t - ref.t;
 
-            if (dist < 10 || dt <= 0) {
-                this._vx = 0;
-                this._vy = 0;
-                this.isFlying = true;
-                this._checkedBin = false;
-                return;
-            }
+            // if (dist < 10 || dt <= 0) {
+            //     this._vx = 0;
+            //     this._vy = 0;
+            //     this.isFlying = true;
+            //     this._checkedBin = false;
+            //     return;
+            // }
 
-            const speed = (dist / dt) * 16 * SPEED_SCALE;
-            this._vx = (dx / dist) * speed;
-            this._vy = (dy / dist) * speed;
-            this.isFlying = true;
-            this._checkedBin = false;
+            // const speed = (dist / dt) * 16 * SPEED_SCALE;
+            // this._vx = (dx / dist) * speed;
+            // this._vy = (dy / dist) * speed;
+            // this.isFlying = true;
+            // this._checkedBin = false;
         });
     }
 
@@ -145,12 +168,12 @@ export default class PaperBall {
         this._vy = 0;
         this.aimLine.clear();
 
-        this.circle
-            .setVisible(true)
-            .setAlpha(1)
-            .setScale(SCALE_NEAR)
-            .setDepth(10)
-            .setPosition(this.startX, this.startY);
+        // this.circle
+        //     .setVisible(true)
+        //     .setAlpha(1)
+        //     .setScale(SCALE_NEAR)
+        //     .setDepth(10)
+        //     .setPosition(this.startX, this.startY);
     }
 
     destroy() {

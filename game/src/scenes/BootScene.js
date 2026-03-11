@@ -73,7 +73,7 @@ export default class BootScene extends Phaser.Scene {
             const quiz = await APIService.fetchQuizByCode(code);
             this.registry.set("quiz", quiz);
 
-            this.scene.start(SCENES.MENU);
+            this.scene.start(SCENES.PRELOADER);
         } catch (err) {
             this._showMessage(err.message, true);
 
