@@ -9,9 +9,14 @@ export default class APIService {
         const response = await fetch(`${API_BASE_URL}/quizzes/code/${code}`);
 
         if (!response.ok) {
-            throw new Error(
-                `Erreur API : ${response.status} ${response.statusText}`,
-            );
+            let error = new Error(response.statusText);
+            error.status = response.status;
+
+            if (error.status === 404) {
+                error = new Error('Code de quiz invalide');
+            }
+
+            throw error;
         }
 
         const quiz = await response.json();
