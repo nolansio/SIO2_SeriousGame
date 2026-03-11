@@ -37,7 +37,7 @@ export class PaperBall extends Phaser.Physics.Matter.Sprite {
         //     .setDepth(10);
 
         this.aimLine = scene.add.graphics().setDepth(9);
-        // this._setupInput();
+        this._setupInput();
         scene.events.on("update", this._update, this);
         this.scene.matter.world.on(
             "collisionstart",
@@ -46,27 +46,27 @@ export class PaperBall extends Phaser.Physics.Matter.Sprite {
     }
 
     _update() {
-        // if (!this.isFlying) return;
-        // this._vy += GRAVITY;
-        // const newX = this.circle.x + this._vx;
-        // const newY = this.circle.y + this._vy;
-        // this.circle.setPosition(newX, newY);
-        // // Perspective : rétrécit proportionnellement à la montée
-        // // t = 0 au départ, augmente en montant
-        // const t = Phaser.Math.Clamp(
-        //     (this.startY - newY) / (this.startY - 0),
-        //     0,
-        //     1,
-        // );
-        // const wantScale = Phaser.Math.Linear(SCALE_NEAR, SCALE_MIN, t);
-        // // La balle ne peut que rétrécir : on prend le minimum atteint
-        // // → elle ne regrandit pas quand elle redescend, mais ne passe pas sous SCALE_MIN
-        // this._currentScale = Math.max(
-        //     SCALE_MIN,
-        //     Math.min(this._currentScale, wantScale),
-        // );
-        // this.circle.setScale(this._currentScale);
-        // this.circle.setDepth(Phaser.Math.Linear(12, 4, t));
+        if (!this.isFlying) return;
+        this._vy += GRAVITY;
+        const newX = this.x + this._vx;
+        const newY = this.y + this._vy;
+        this.circle.setPosition(newX, newY);
+        // Perspective : rétrécit proportionnellement à la montée
+        // t = 0 au départ, augmente en montant
+        const t = Phaser.Math.Clamp(
+            (this.startY - newY) / (this.startY - 0),
+            0,
+            1,
+        );
+        const wantScale = Phaser.Math.Linear(SCALE_NEAR, SCALE_MIN, t);
+        // La balle ne peut que rétrécir : on prend le minimum atteint
+        // → elle ne regrandit pas quand elle redescend, mais ne passe pas sous SCALE_MIN
+        this._currentScale = Math.max(
+            SCALE_MIN,
+            Math.min(this._currentScale, wantScale),
+        );
+        this.circle.setScale(this._currentScale);
+        this.circle.setDepth(Phaser.Math.Linear(12, 4, t));
     }
 
     onCollideStart(event) {
@@ -91,24 +91,22 @@ export class PaperBall extends Phaser.Physics.Matter.Sprite {
         const { scene } = this;
 
         scene.input.on("pointerdown", (ptr) => {
-            if (this.isFlying) return;
             const dist = Phaser.Math.Distance.Between(
                 ptr.x,
                 ptr.y,
-                this.circle.x,
-                this.circle.y,
+                this.x,
+                this.y,
             );
-            if (dist <= 34) {
-                this.isDragging = true;
-                this.dragStartX = ptr.x;
-                this.dragStartY = ptr.y;
-                this._history = [{ x: ptr.x, y: ptr.y, t: performance.now() }];
-            }
+            this.setIgnoreGravity(true);
+            this.isDragging = true;
+            this.dragStartX = ptr.x;
+            this.dragStartY = ptr.y;
+            this._history = [{ x: ptr.x, y: ptr.y, t: performance.now() }];
         });
 
         scene.input.on("pointermove", (ptr) => {
             if (!this.isDragging) return;
-            this.circle.setPosition(ptr.x, ptr.y);
+            this.setPosition(ptr.x, ptr.y);
             this._drawAimLine(ptr.x, ptr.y);
             this._history.push({ x: ptr.x, y: ptr.y, t: performance.now() });
         });
@@ -117,6 +115,7 @@ export class PaperBall extends Phaser.Physics.Matter.Sprite {
             if (!this.isDragging) return;
             this.isDragging = false;
             this.aimLine.clear();
+            this.setIgnoreGravity(false);
 
             const now = performance.now();
             const fullHistory = [
@@ -131,21 +130,8 @@ export class PaperBall extends Phaser.Physics.Matter.Sprite {
             const dx = last.x - ref.x;
             const dy = last.y - ref.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            const dt = last.t - ref.t;
-
-            // if (dist < 10 || dt <= 0) {
-            //     this._vx = 0;
-            //     this._vy = 0;
-            //     this.isFlying = true;
-            //     this._checkedBin = false;
-            //     return;
-            // }
-
-            // const speed = (dist / dt) * 16 * SPEED_SCALE;
-            // this._vx = (dx / dist) * speed;
-            // this._vy = (dy / dist) * speed;
-            // this.isFlying = true;
-            // this._checkedBin = false;
+            const velocity = 1.01;
+            this.setVelocity(dx * velocity, dy * velocity);
         });
     }
 
@@ -157,6 +143,12 @@ export class PaperBall extends Phaser.Physics.Matter.Sprite {
         this.aimLine.lineTo(toX, toY);
         this.aimLine.strokePath();
     }
+
+    // _throwBall(pointer, velocity) {
+    //     const dx = pointer.x - this.x;
+    //     const dy = pointer.y - this.y;
+    //     this.ball.setVelocity(dx * velocity, dy * velocity);
+    // }
 
     reset() {
         this.isFlying = false;
