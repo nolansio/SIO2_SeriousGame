@@ -7,7 +7,7 @@ export default class Preloader extends Scene {
     }
 
     preload() {
-        this.load.setPath("assets");
+        this.load.setPath("public/assets");
         this.load.image("green-bin", "pictures/green-bin.png");
         this.load.image("paper-ball", "pictures/paper-ball.png");
     }
