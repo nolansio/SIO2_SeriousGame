@@ -76,6 +76,11 @@ export default class BootScene extends Phaser.Scene {
             this.scene.start(SCENES.MENU);
         } catch (err) {
             this._showMessage(err.message, true);
+
+            history.pushState(null, '', window.location.pathname);
+
+            this.loadingText.setText('');
+            this._showInput();
         }
     }
 
@@ -106,6 +111,7 @@ export default class BootScene extends Phaser.Scene {
         } catch (err) {
             this._showMessage(err.message, true);
             this.inputButton.value = '';
+
             this._showInput();
         }
     }
