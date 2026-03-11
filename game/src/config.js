@@ -14,6 +14,7 @@ export const COLORS = {
 
 export const SCENES = {
     BOOT: "BootScene",
+    PRELOADER: "Preloader",
     MENU: "MenuScene",
     GAME: "GameScene",
     RESULT: "ResultScene",

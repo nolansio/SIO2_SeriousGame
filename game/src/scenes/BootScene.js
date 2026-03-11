@@ -36,7 +36,7 @@ export default class BootScene extends Phaser.Scene {
             // Stocke le quiz dans le registry (accessible depuis toutes les scènes)
             this.registry.set("quiz", quiz);
 
-            this.scene.start(SCENES.MENU);
+            this.scene.start(SCENES.PRELOADER);
         } catch (err) {
             this._showError(`❌ ${err.message}`);
         }

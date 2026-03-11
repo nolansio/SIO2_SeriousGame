@@ -4,9 +4,13 @@ const BIN_RX = 52;
 const BIN_RY = 16;
 const BIN_BOTTOM_RX = 40;
 
-export default class Bin {
+export class Bin extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, openingY, floorY, type) {
+        super(scene.matter.world, x, openingY, "green-bin");
         this.scene = scene;
+        this.scene.add.existing(this);
+        this.setStatic(true);
+        this.setDepth(11);
         this.type = type;
         this.baseX = x;
         this.openingY = openingY;
@@ -26,75 +30,6 @@ export default class Bin {
             })
             .setOrigin(0.5)
             .setDepth(7);
-
-        this._draw(this._color);
-    }
-
-    _draw(color) {
-        const x = this.baseX;
-        const oy = this.openingY;
-        const fy = this.floorY;
-
-        // Ombre : ellipse plate centrée sur la base, sur le sol
-        // Large et très aplatie pour simuler une ombre au sol en perspective
-        this.shadow.clear();
-        this.shadow.fillStyle(0x000000, 0.4);
-        this.shadow.fillEllipse(x, fy, BIN_BOTTOM_RX * 2.8, BIN_RY * 1.0);
-
-        const g = this.graphics;
-        g.clear();
-
-        // Corps trapèze
-        g.fillStyle(color, 0.82);
-        g.fillPoints(
-            [
-                { x: x - BIN_RX, y: oy },
-                { x: x + BIN_RX, y: oy },
-                { x: x + BIN_BOTTOM_RX, y: fy },
-                { x: x - BIN_BOTTOM_RX, y: fy },
-            ],
-            true,
-        );
-
-        // Relief gauche (sombre)
-        g.fillStyle(0x000000, 0.2);
-        g.fillPoints(
-            [
-                { x: x - BIN_RX, y: oy },
-                { x: x - BIN_RX + 8, y: oy },
-                { x: x - BIN_BOTTOM_RX + 6, y: fy },
-                { x: x - BIN_BOTTOM_RX, y: fy },
-            ],
-            true,
-        );
-
-        // Relief droit (plus sombre)
-        g.fillStyle(0x000000, 0.38);
-        g.fillPoints(
-            [
-                { x: x + BIN_RX - 8, y: oy },
-                { x: x + BIN_RX, y: oy },
-                { x: x + BIN_BOTTOM_RX, y: fy },
-                { x: x + BIN_BOTTOM_RX - 6, y: fy },
-            ],
-            true,
-        );
-
-        // Base de la corbeille posée sur le sol (ellipse sombre)
-        g.fillStyle(0x000000, 0.6);
-        g.fillEllipse(x, fy, BIN_BOTTOM_RX * 2, BIN_RY * 1.0);
-
-        // Bord de l'ouverture
-        g.fillStyle(color, 1);
-        g.fillEllipse(x, oy, BIN_RX * 2, BIN_RY * 2);
-
-        // Creux intérieur
-        g.fillStyle(0x050510, 0.95);
-        g.fillEllipse(x, oy, (BIN_RX - 5) * 2, (BIN_RY - 3) * 2);
-
-        // Contour brillant
-        g.lineStyle(2, 0xffffff, 0.45);
-        g.strokeEllipse(x, oy, BIN_RX * 2, BIN_RY * 2);
     }
 
     contains(bx) {
@@ -121,15 +56,14 @@ export default class Bin {
             duration: 400,
             ease: "Sine.easeInOut",
             onUpdate: () => {
-                this._draw(this._color);
                 this.label.setX(this.baseX);
             },
         });
     }
 
     highlight(success) {
-        const flash = success ? 0xffffff : 0x555555;
-        this._draw(flash);
-        this.scene.time.delayedCall(150, () => this._draw(this._color));
+        // const flash = success ? 0xffffff : 0x555555;
+        // this._draw(flash);
+        // this.scene.time.delayedCall(150, () => this._draw(this._color));
     }
 }
