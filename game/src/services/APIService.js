@@ -1,10 +1,6 @@
 import { API_BASE_URL } from "../config.js";
 
 export default class APIService {
-    /**
-     * Récupère un quiz par son id (paramètre URL ?id=...)
-     * Retourne : { id, title, description, questions: [{ id, enonce, reponse }] }
-     */
     static async fetchQuizByCode(code) {
         const response = await fetch(`${API_BASE_URL}/quizzes/code/${code}`);
 
