@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { SCENES } from "../config.js";
-import APIService from "../services/APIService.js";
+import ApiService from "../services/ApiService.js";
 
 export default class BootScene extends Phaser.Scene {
     constructor() {
@@ -70,7 +70,7 @@ export default class BootScene extends Phaser.Scene {
         }
 
         try {
-            const quiz = await APIService.fetchQuizByCode(code);
+            const quiz = await ApiService.fetchQuizByCode(code);
             this.registry.set("quiz", quiz);
 
             this.scene.start(SCENES.PRELOADER);
@@ -101,7 +101,7 @@ export default class BootScene extends Phaser.Scene {
         this._showMessage("⏳ Chargement du quiz...");
 
         try {
-            const quiz = await APIService.fetchQuizByCode(code);
+            const quiz = await ApiService.fetchQuizByCode(code);
             this._hideInput();
 
             this.registry.set("quiz", quiz);
