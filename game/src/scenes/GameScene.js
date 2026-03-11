@@ -29,6 +29,7 @@ export default class GameScene extends Phaser.Scene {
         this.worldBounds = 0x0001;
         this.ballLayer = this.matter.world.nextCategory();
         this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height);
+        this.matter.world.setBounds();
 
         this._drawBackground(width, height);
 
